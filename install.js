@@ -57,10 +57,11 @@ export async function main(ns) {
   if (hostname !== 'home') {
 	  throw new Exception('Run the script from home');
   }
+  ns.tprint("Will download:");
+  ns.tprint(JSON.stringify(filesToDownload, null, 2));
 
   for (let filename of filesToDownload) {
-	  const saveFilename = '/os/'+filename;
-	  await downloadFromGH(ns, filename, saveFilename);
+	  await downloadFromGH(ns, filename, filename);
   }
 
   terminalCommand('unalias bootOS');
