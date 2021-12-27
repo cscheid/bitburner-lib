@@ -14,7 +14,9 @@ async function githubReq(ns, req)
   ns.print(`Requesting ${url}`);
   let res = await fetch(url, { method: 'GET', headers });
   // an authenticated github account can make 5000 requests/hour
-  await ns.sleep(3600 * 1000 / 5000);
+  // but we're going to throttle it at 50k/hour and hope people don't hammer it..
+  // 
+  await ns.sleep(3600 * 100 / 5000);
   if (res.status !== 200) {
     throw new Error(`Request ${req} failed.`);
   }
@@ -66,6 +68,7 @@ export async function main(ns) {
   }
   
   ns.tprint("Install complete!");
+  await ns.run("setup.js", 1);
 }
 
 
