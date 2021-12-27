@@ -5,6 +5,6 @@ import { placeFile } from "/lib/fs.js";
 export async function main(ns) {
   let { filesToDownload } = await fetchConfig(ns);
   for (const file of filesToDownload) {
-    placeFile(ns, file);
+    await placeFile(ns, file);
   }
 }
