@@ -16,7 +16,7 @@ async function githubReq(ns, req)
   // an authenticated github account can make 5000 requests/hour
   await ns.sleep(3600 * 1000 / 5000);
   if (res.status !== 200) {
-    throw new Exception(`Request ${req} failed.`);
+    throw new Error(`Request ${req} failed.`);
   }
   return res.json();
 }
@@ -25,7 +25,7 @@ async function getFileFromGH(ns, owner, repo, path)
 {
   let res = await githubReq(ns, `repos/${owner}/${repo}/contents/${path}`);
   if (res.encoding !== "base64") {
-    throw new Exception(`Don't know how to decode ${res.encoding}`);
+    throw new Error(`Don't know how to decode ${res.encoding}`);
   }
   return atob(res.content);
 }
@@ -55,7 +55,7 @@ export async function main(ns) {
   let hostname = ns.getHostname();
 
   if (hostname !== 'home') {
-	  throw new Exception('Run the script from home');
+	  throw new Error('Run the script from home');
   }
   ns.tprint("Will download:");
   ns.tprint(JSON.stringify(filesToDownload, null, 2));
