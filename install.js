@@ -1,18 +1,49 @@
-// from https://github.com/lethern/Bitburner_os/blob/main/install.js
-let baseUrl = 'https://raw.githubusercontent.com/cscheid/bitburner-lib/main/';
-let json_filename = 'install_files_json.txt';
+// lots of inspiration from https://github.com/lethern/Bitburner_os/blob/main/install.js
 
-async function downloadFromGH(ns, path, save_filename)
+let owner = "cscheid";
+let repo = "bitburner-lib";
+let configFileName = 'install_files_json.txt';
+
+async function githubReq(ns, req)
 {
-	try {
-	  await ns.scriptKill(save_filename, 'home');
-	  await ns.rm(save_filename);
-	  await ns.sleep(20);
-	  await ns.wget(path + '?ts=' + new Date().getTime(), save_filename);
-	} catch (e) {
-	  ns.tprint(`ERROR (tried to download ${path})`);
+  let { user, pat } = JSON.parse(await ns.read("github-pat.txt"));
+  let url = `https://api.github.com/${req}`;
+  let authString = btoa(`${user}:${pat}`);
+  let headers = new Headers();
+  headers.set('Authorization', `basic ${authString}`);
+  ns.print(`Requesting ${url}`);
+  let res = await fetch(url, { method: 'GET', headers });
+  // an authenticated github account can make 5000 requests/hour
+  await ns.sleep(3600 * 1000 / 5000);
+  if (res.status !== 200) {
+    throw new Exception(`Request ${req} failed.`);
+  }
+  return res.json();
+}
+
+async function getFileFromGH(ns, owner, repo, path)
+{
+  let res = await githubReq(ns, `repos/${owner}/${repo}/contents/${path}`);
+  if (res.encoding !== "base64") {
+    throw new Exception(`Don't know how to decode ${res.encoding}`);
+  }
+  return atob(res.content);
+}
+
+async function downloadFromGH(ns, path, saveFilename)
+{
+  let res = await getFileFromGH(ns, owner, repo, path);
+  await ns.write(saveFilename, res, "w");
+}
+
+async function fetchConfig(ns) {
+  try {
+    let result = await getFileFromGH(ns, owner, repo, configFileName);
+    return JSON.parse(result);
+  } catch(e) {
+	  ns.tprint(`ERROR: Downloading and reading config file failed ${configFileName}`);
 	  throw e;
-	}
+  }
 }
 
 /** @param {NS} ns */
@@ -29,8 +60,8 @@ export async function main(ns) {
 
   for (let filename of filesToDownload) {
 	  const path = baseUrl + filename;
-	  const save_filename = '/os/'+filename;
-	  await downloadFromGH(ns, path, save_filename);
+	  const saveFilename = '/os/'+filename;
+	  await downloadFromGH(ns, path, saveFilename);
   }
 
   // terminalCommand('unalias bootOS');
@@ -39,16 +70,6 @@ export async function main(ns) {
   ns.tprint("Install complete! To start, type:    bootOS");
 }
 
-async function fetchConfig(ns) {
-  try {
-	  await ns.rm(json_filename);
-	  await ns.wget(baseUrl + json_filename + '?ts=' + new Date().getTime(), json_filename);
-	  return JSON.parse(ns.read(json_filename));
-  } catch(e) {
-	  ns.tprint(`ERROR: Downloading and reading config file failed ${json_filename}`);
-	  throw e;
-  }
-}
 
 function terminalCommand(message) {
   const docs = globalThis['document'];
@@ -58,3 +79,4 @@ function terminalCommand(message) {
   terminalInput[handler].onChange({target:terminalInput});
   terminalInput[handler].onKeyDown({keyCode:13,preventDefault:()=>null});
 }
+
