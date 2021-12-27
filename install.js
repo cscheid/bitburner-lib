@@ -62,21 +62,10 @@ export async function main(ns) {
 
   for (let filename of filesToDownload) {
 	  await downloadFromGH(ns, filename, '/' + filename);
+    ns.tprint(`Installed ${filename}`);
   }
-
-  terminalCommand('unalias bootOS');
-  terminalCommand('alias -g bootOS="run os/main.js"');
-
-  ns.tprint("Install complete! To start, type:    bootOS");
+  
+  ns.tprint("Install complete!");
 }
 
-
-function terminalCommand(message) {
-  const docs = globalThis['document'];
-  const terminalInput = docs.getElementById("terminal-input");
-  terminalInput.value=message;
-  const handler = Object.keys(terminalInput)[1];
-  terminalInput[handler].onChange({target:terminalInput});
-  terminalInput[handler].onKeyDown({keyCode:13,preventDefault:()=>null});
-}
 
