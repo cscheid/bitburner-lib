@@ -1,5 +1,5 @@
 /** @param {NS} ns **/
-import { scanAnalyze } from "../lib/net.js";
+import { scanAnalyze } from "/lib/net.js";
 
 // unlike regular scan-analyze, we just full-scan the whole net
 // and save to disk
