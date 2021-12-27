@@ -1,4 +1,4 @@
 {
-	"welcomeLabel": "cscheid/bitburner-lib: hello"
+	"welcomeLabel": "cscheid/bitburner-lib: hello",
 	"filesToDownload": []
 }
