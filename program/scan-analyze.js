@@ -10,5 +10,5 @@ export async function main(ns) {
 	visitedHosts[host] = true;
 
 	let result = await scanAnalyze(ns, host, depth, visitedHosts);
-  await ns.write("data/network-scan.txt", JSON.stringify(result, null, 2), "w");
+  await ns.write("/data/network-scan.txt", JSON.stringify(result, null, 2), "w");
 }
