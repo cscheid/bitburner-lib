@@ -19,7 +19,7 @@ Array.prototype.extremumBy = function(pluck, extremum) {
        return pair;
     }
   },null)[1];
-}
+};
 
 export function formatLs(fileList)
 {
