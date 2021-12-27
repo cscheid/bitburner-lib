@@ -1,1 +1,1 @@
-{"welcomeLabel": "cscheid/bitburner-lib: hello", "filesToDownload": ["./install.js", "./program/scan-analyze.js", "./lib/net.js", "./lib/fs.js", "./import/show-rewards.js", "./import/new_hacknet.js", "./import/hack-self.js", "./import/free-utils.js"]}
+{"welcomeLabel": "cscheid/bitburner-lib: hello", "filesToDownload": ["install.js", "program/scan-analyze.js", "lib/net.js", "lib/fs.js", "import/show-rewards.js", "import/new_hacknet.js", "import/hack-self.js", "import/free-utils.js"]}
