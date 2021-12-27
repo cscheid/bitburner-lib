@@ -61,7 +61,7 @@ export async function main(ns) {
   ns.tprint(JSON.stringify(filesToDownload, null, 2));
 
   for (let filename of filesToDownload) {
-	  await downloadFromGH(ns, filename, filename);
+	  await downloadFromGH(ns, filename, '/' + filename);
   }
 
   terminalCommand('unalias bootOS');
