@@ -59,13 +59,12 @@ export async function main(ns) {
   }
 
   for (let filename of filesToDownload) {
-	  const path = baseUrl + filename;
 	  const saveFilename = '/os/'+filename;
-	  await downloadFromGH(ns, path, saveFilename);
+	  await downloadFromGH(ns, filename, saveFilename);
   }
 
-  // terminalCommand('unalias bootOS');
-  // terminalCommand('alias -g bootOS="run os/main.js"');
+  terminalCommand('unalias bootOS');
+  terminalCommand('alias -g bootOS="run os/main.js"');
 
   ns.tprint("Install complete! To start, type:    bootOS");
 }
