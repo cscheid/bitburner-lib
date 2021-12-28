@@ -1,4 +1,4 @@
-export function solveIt(array)
+function solveIt(array)
 {
   let state = [];
   for (let i = 0; i < array.length; ++i) {
@@ -27,3 +27,5 @@ export function solveIt(array)
     }
   }
 }
+
+export default solveIt;

@@ -51,5 +51,7 @@ function solveIt(str, target)
       }
     }
   }
-  return `[${result.join(", ")}]`;
+  return result; // `[${result.join(", ")}]`;
 }
+
+export default solveIt;
