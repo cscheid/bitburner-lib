@@ -18,4 +18,6 @@ export async function main(ns) {
     result.push({ host: host.name,
                   files: files });
   });
+
+  await ns.write("/log/global-crawl.txt", `${JSON.stringify(result, null, 2)}\n`, "w");
 }
