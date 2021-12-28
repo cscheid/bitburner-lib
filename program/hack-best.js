@@ -23,7 +23,7 @@ export async function main(ns) {
       continue;
     }
     
-    if (bestNode.minSecurity * securityThresh > bestNode.security) {
+    if (bestNode.security > bestNode.minSecurity * securityThresh) {
       // while security too high, weaken
       await ns.weaken(bestNode.name);
     } else if (bestNode.money < bestNode.maxMoney * moneyThresh) {

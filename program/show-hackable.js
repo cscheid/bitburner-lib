@@ -36,7 +36,7 @@ export async function main(ns) {
     hosts.push(host);
   });
 
-  const fmt = (v) => String(~~(v * 100) / 100);
+  const fmt = (v) => String(Math.round(v * 100) / 100);
   
   const out = [["name", "minsec", "sec", "maxmoney", "money"]];
   hosts.forEach(host => {
