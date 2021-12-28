@@ -59,12 +59,14 @@ export async function main(ns) {
   if (hostname !== 'home') {
 	  throw new Error('Run the script from home');
   }
-  ns.tprint("Will download:");
-  ns.tprint(JSON.stringify(filesToDownload, null, 2));
+  ns.tprint("Will download files.");
+  ns.print(JSON.stringify(filesToDownload, null, 2));
 
+  let count = 0;
   for (let filename of filesToDownload) {
 	  await downloadFromGH(ns, filename, '/' + filename);
-    ns.tprint(`Installed ${filename}`);
+    ++count;
+    ns.tprint(`Installed ${count}/${filesToDownload.length}: ${filename}`);
   }
   
   ns.tprint("Install complete!");
