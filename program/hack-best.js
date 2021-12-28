@@ -9,7 +9,7 @@ export async function main(ns) {
     let currentLevel = ns.getHackingLevel();
     let bestNode;
     
-    visit(ns, (host) => {
+    await visit(ns, (host) => {
       if (host.requiredHackingLevel > currentLevel)
         return;
       
