@@ -2,11 +2,13 @@ import arrayJumpingGame from "/contracts/array-jumping-game.js";
 import findAllValidMathExpressions from "/contracts/find-all-valid-math-expressions.js";
 import algorithmicStockTraderI from "/contracts/algorithmic-stock-trader-i.js";
 import algorithmicStockTraderII from "/contracts/algorithmic-stock-trader-ii.js";
+import algorithmicStockTraderIII from "/contracts/algorithmic-stock-trader-iii.js";
 import uniquePathsInAGridII from "/contracts/unique-paths-in-a-grid-ii.js";
 import subarrayMaximumSum from "/contracts/subarray-maximum-sum.js";
 import findLargestPrimeFactor from "/contracts/find-largest-prime-factor.js";
 import mergeOverlappingIntervals from "/contracts/merge-overlapping-intervals.js";
 import uniquePathsInAGrid from "/contracts/unique-paths.js";
+import generateIpAddresses from "/contracts/generate-ip-addresses.js";
 
 let dispatch = {
   "Find All Valid Math Expressions": findAllValidMathExpressions,
@@ -14,10 +16,12 @@ let dispatch = {
   "Unique Paths in a Grid": uniquePathsInAGrid,
   "Algorithmic Stock Trader I": algorithmicStockTraderI,
   "Algorithmic Stock Trader II": algorithmicStockTraderII,
+  "Algorithmic Stock Trader III": algorithmicStockTraderIII,
   "Subarray with Maximum Sum": subarrayMaximumSum,
   "Array Jumping Game": arrayJumpingGame,
   "Find Largest Prime Factor": findLargestPrimeFactor,
-  "Merge Overlapping Intervals": mergeOverlappingIntervals
+  "Merge Overlapping Intervals": mergeOverlappingIntervals,
+  "Generate IP Addresses": generateIpAddresses
 };
 
 export function solve(ns, filename, host)
