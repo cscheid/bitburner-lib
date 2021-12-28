@@ -18,7 +18,7 @@ export function formatTable(lst)
     });
     result.push(strs.join(" | "));
   });
-  return "\n".join(result);
+  return result.join("\n");
 }
 
 /** @param {NS} ns */
