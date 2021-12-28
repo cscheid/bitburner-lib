@@ -28,6 +28,8 @@ function solve(ns, filename, host)
     return undefined;
   }
   let data = ns.codingcontract.getData(filename, host);
+  ns.tprint("Will solve with data:");
+  ns.tprint(JSON.stringify(data, null, 2));
   let result = dispatch[type](...data);
   return result;
 }
