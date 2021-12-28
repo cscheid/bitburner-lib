@@ -12,8 +12,8 @@ export async function main(ns) {
   });
 	let net = await scanAnalyze(ns, "home", 100);
   ns.tprint(targetPath.join(" -> "));
-  // command("home");
-  // for (const host of targetPath) {
-  //   command(`connect ${host}`);
-  // }
+  command("home");
+  for (const host of targetPath) {
+    command(`connect ${host}`);
+  }
 }
