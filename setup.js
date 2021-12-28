@@ -7,14 +7,15 @@ export async function main(ns) {
   await restart(ns, "/program/solve-contracts.js", "home");
   await restart(ns, "/program/rooter.js", "home");
 
+  await command(`unalias install`);
+  await command(`alias install="run install.js"`);
+  
   for (const file of await ns.ls("home", "/program/")) {
     if (!file.startsWith("/program/")) {
       continue;
     }
     let shortcut = file.slice("/program/".length, -(".js".length));
     ns.tprint("Setting up alias for ${shortcut}");
-    await command(`unalias install`);
-    await command(`alias install="run install.js"`);
     await command(`unalias ${shortcut}`);
     await command(`alias ${shortcut}="run ${file}"`);
   }
