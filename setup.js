@@ -7,7 +7,7 @@ export async function main(ns) {
   await restart(ns, "/program/solve-contracts.js", "home");
   await restart(ns, "/program/rooter.js", "home");
 
-  for (let file in await ns.ls("home", "/program/")) {
+  for (const file of await ns.ls("home", "/program/")) {
     if (!file.startsWith("/program/")) {
       continue;
     }
