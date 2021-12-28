@@ -13,4 +13,9 @@ function uniquePaths(i, j, memo)
   return result;
 }
 
-export default uniquePaths;
+function solveIt([i, j])
+{
+  return uniquePaths(i, j);
+}
+
+export default solveIt;

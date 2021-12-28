@@ -38,7 +38,7 @@ function allJoins(lst)
           ...prev.map(el => `${lst[0]}*${el}`)];
 }
 
-function solveIt(str, target)
+function solveIt([str, target])
 {
   const result = [];
   for (const split of allSplits(str)) {
