@@ -11,7 +11,14 @@ export async function main(ns) {
     }
   });
   const target = ns.args[0];
-  ns.tprint(`Will loic ${target} using ${JSON.stringify(lst.map(node => node.name))}`);
+  const action = ns.args[1];
+  let msg;
+  if (action !== undefined) {
+    msg = `Will loic (${action}) ${target} using ${JSON.stringify(lst.map(node => node.name))}`;
+  } else {
+    msg = `Will loic ${target} using ${JSON.stringify(lst.map(node => node.name))}`;
+  }
+  ns.tprint(msg);
   
   for (const node of lst) {
     await ns.killall(node.name);
@@ -20,7 +27,11 @@ export async function main(ns) {
     let threads = ~~(maxRam / ram);
     if (threads > 0) {
       ns.tprint(`${node.name}: ${threads} threads`);
-      await ns.exec("/program/hack.js", node.name, threads, target);
+      if (action) {
+        await ns.exec("/program/hack.js", node.name, threads, target, action);
+      } else {
+        await ns.exec("/program/hack.js", node.name, threads, target);
+      }
     } else {
       ns.tprint(`Can't use ${node.name}, ${maxRam} < ${ram}`);
     }
