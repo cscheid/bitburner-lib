@@ -9,12 +9,10 @@ function rootNode(ns, name) {
 export async function main(ns) {
   while (true) {
     let hosts = [];
-    let currentLevel = ns.getHackingLevel();
     let scan = await visit(ns, host => hosts.push(host));
     let portLevel = totalPorts(ns);
   
     let hostsToRoot = hosts
-        .filter(host => (host.requiredHackingLevel <= currentLevel))
         .filter(host => (portLevel >= host.numPortsRequired))
         .filter(host => !host.hasRootAccess)
         .map(host => host.name);
