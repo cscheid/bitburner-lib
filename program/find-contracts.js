@@ -13,5 +13,5 @@ export async function main(ns) {
       }
     });
   });
-  ns.tprint("\n\n" + formatTable(contracts));JSON.stringify(contracts, null, 2));
+  ns.tprint("\n\n" + formatTable(contracts));
 }
