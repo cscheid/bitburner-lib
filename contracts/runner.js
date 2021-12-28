@@ -1,10 +1,19 @@
 import arrayJumpingGame from "/contracts/array-jumping-game.js";
 import findAllValidMathExpressions from "/contracts/find-all-valid-math-expressions.js";
 import algorithmicStockTraderI from "/contracts/algorithmic-stock-trader-i.js";
+import algorithmicStockTraderII from "/contracts/algorithmic-stock-trader-ii.js";
+import uniquePathsInAGridII from "/contracts/unique-paths-in-a-grid-ii.js";
+import subarrayMaximumSum from "/contracts/subarray-maximum-sum.js";
+import findLargestPrimeFactor from "/contracts/find-largest-prime-factor.js";
 
 let dispatch = {
   "Find All Valid Math Expressions": findAllValidMathExpressions,
-  "Algorithmic Stock Trader I": algorithmicStockTraderI
+  "Unique Paths in a Grid II": uniquePathsInAGridII,
+  "Algorithmic Stock Trader I": algorithmicStockTraderI,
+  "Algorithmic Stock Trader II": algorithmicStockTraderII,
+  "Subarray with Maximum Sum": subarrayMaximumSum,
+  "Array Jumping Game": arrayJumpingGame,
+  "Find Largest Prime Factor": findLargestPrimeFactor
 };
 
 function solve(ns, filename, host)

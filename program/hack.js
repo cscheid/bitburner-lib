@@ -3,6 +3,10 @@ import { bestActionAt } from "/lib/hack.js";
 
 /** @param {NS} ns */
 export async function main(ns) {
+  if (ns.args.length === 0) {
+    ns.tprint("\n\nUsage: hack.js <node>");
+    return;
+  }
   let name = ns.args[0];
   while (true) {
     let target;

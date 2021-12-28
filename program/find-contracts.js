@@ -3,13 +3,14 @@ import { formatTable } from "/lib/fmt.js";
 
 /** @param {NS} ns */
 export async function main(ns) {
-  const contracts = [["host", "file"]];
+  const contracts = [["host", "file", "type"]];
   
   await visit(ns, (host) => {
     const files = ns.ls(host.name);
     files.forEach(file => {
       if (file.endsWith("cct")) {
-        contracts.push([host.name, file]);
+        let type = ns.codingcontract.getContractType(file, host.name);
+        contracts.push([host.name, file, type]);
       }
     });
   });
