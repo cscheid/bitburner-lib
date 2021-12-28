@@ -5,6 +5,13 @@ import { solve } from "/contracts/runner.js";
 export async function main(ns) {
   for (const { host, file } of await getContracts(ns)) {
     ns.tprint(`attempting contract ${host}:${file}`);
-    solve(ns, file, host);
+    let solution = solve(ns, file, host);
+    if (solution === undefined) {
+      continue;
+    }
+    let outcome = ns.codingcontract.attempt(solution, file, host, {
+      returnReward: true
+    });
+    ns.tprint(`Outcome: ${outcome}`);
   }
 }
