@@ -19,5 +19,5 @@ export async function main(ns) {
                   files: files });
   });
 
-  await ns.write("/log/global-crawl.txt", `${JSON.stringify(result, null, 2)}\n`, "w");
+  await ns.write("/log/global-crawl.txt", JSON.stringify(result, null, 2), "w");
 }

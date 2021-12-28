@@ -14,7 +14,7 @@ export async function main(ns) {
         returnReward: true
       });
       ns.tprint(`Outcome: ${outcome}`);
-      await ns.write("/log/contracts.txt", `${(new Date()).toISOString()}: ${outcome}`, "a");
+      await ns.write("/log/contracts.txt", `${(new Date()).toISOString()}: ${outcome}\n`, "a");
     }
     await ns.sleep(1000);
   }
