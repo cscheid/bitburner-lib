@@ -34,7 +34,7 @@ export async function main(ns) {
 
   const fmt = (v) => String(~~(v * 100) / 100);
   
-  const out = ["name", "security level", "money"];
+  const out = [["name", "security level", "money"]];
   hosts.forEach(host => {
     out.push([host.name,
               fmt(host.securityLevel),
