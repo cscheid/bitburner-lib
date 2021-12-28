@@ -12,6 +12,8 @@ export async function main(ns) {
     await visit(ns, (host) => {
       if (host.requiredHackingLevel > currentLevel)
         return;
+      if (!host.hasRootAccess)
+        return;
       
       if (bestNode === undefined || host.maxMoney > bestNode.maxMoney) {
         bestNode = host;

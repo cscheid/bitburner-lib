@@ -31,7 +31,7 @@ export async function main(ns) {
   let hack = ns.getHackingLevel();
   
   await visit(ns, (host) => {
-    if (host.requiredHackingLevel > hack)
+    if (host.requiredHackingLevel > hack || !host.hasRootAccess)
       return;
     hosts.push(host);
   });
