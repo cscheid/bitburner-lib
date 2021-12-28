@@ -1,10 +1,9 @@
 /** @param {NS} ns **/
 
 // import * as utils from "./utils.ns";
-let ns;
-import freeUtils from "./free-utils.ns";
+import freeUtils from "/lib/free.js";
 
-function getOptions() {
+function getOptions(ns) {
     let options = [{
         doIt: () => ns.hacknet.purchaseNode(),
         cost: ns.hacknet.getPurchaseNodeCost(),
@@ -39,14 +38,14 @@ function getOptions() {
     return options;
 }
 
-async function manageBuying() {
-    let input = await ns.read("rewards.txt");
+async function manageBuying(ns) {
+    let input = await ns.read("data/hacknet-rewards.txt");
     // ns.tprint(input);
     let rewards = JSON.parse(input);
     let stopped = false;
 
     while (true) {
-        let options = getOptions();
+        let options = getOptions(ns);
         options.forEach(option => {
             if (rewards[option.name] === undefined) {
                 rewards[option.name] = {
@@ -56,7 +55,7 @@ async function manageBuying() {
                     action: option.doIt,
                     name: option.name,
                     what: option.what
-                }
+                };
             } else {
                 rewards[option.name].cost = option.cost;
                 rewards[option.name].action = option.doIt;
@@ -68,7 +67,7 @@ async function manageBuying() {
 
         if (rewList.length === 0) {
             ns.tprint("No more options, hacknet done!");
-            await ns.write("rewards.txt", JSON.stringify(rewards, null, 2), "w");
+            await ns.write("data/hacknet-rewards.txt", JSON.stringify(rewards, null, 2), "w");
             break;
         }
         let bestReward = rewList[0];
@@ -94,7 +93,7 @@ async function manageBuying() {
             }
 
             bestReward.productionDelta = newProduction - currentProduction;
-            await ns.write("rewards.txt", JSON.stringify(rewards, null, 2), "w");
+            await ns.write("data/hacknet-rewards.txt", JSON.stringify(rewards, null, 2), "w");
         } else {
             if (!stopped)
                 ns.tprint(`would ${bestReward.what} but not rich enough. Waiting.`);
@@ -105,9 +104,7 @@ async function manageBuying() {
     }
 }
 
-export async function main(NS) {
-    //utils.init(NS);
-    ns = NS;
-
-    await manageBuying();
+/** @param {NS} ns */
+export async function main(ns) {
+    await manageBuying(ns);
 }
