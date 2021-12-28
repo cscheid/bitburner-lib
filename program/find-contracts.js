@@ -9,7 +9,7 @@ export async function main(ns) {
     const files = ns.ls(host.name);
     files.forEach(file => {
       if (file.endsWith("cct")) {
-        contracts.push([host, file]);
+        contracts.push([host.name, file]);
       }
     });
   });
