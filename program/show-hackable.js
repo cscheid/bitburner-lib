@@ -17,7 +17,11 @@ export function formatTable(lst)
       strs.push(v + pad);
     });
     result.push(strs.join(" | "));
+    if (result.length === 1) {
+      result.push("-".repeat(result[0].length));
+    }
   });
+  
   return result.join("\n");
 }
 
@@ -40,5 +44,5 @@ export async function main(ns) {
               fmt(host.securityLevel),
               fmt(host.money)]);
   });
-  ns.tprint(formatTable(out));
+  ns.tprint("\n\n" + formatTable(out));
 }
