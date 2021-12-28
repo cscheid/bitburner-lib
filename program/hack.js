@@ -7,7 +7,7 @@ export async function main(ns) {
   while (true) {
     let target;
     await visit(ns, (node) => {
-      if (node.name === node) {
+      if (node.name === name) {
         target = node;
       }
     });
