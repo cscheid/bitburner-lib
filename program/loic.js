@@ -7,7 +7,7 @@ export async function main(ns) {
   const lst = [];
   await visit(ns, (node) => {
     if (node.hasRootAccess && node.name !== "home") {
-      lst.push(node.name);
+      lst.push(node);
     }
   });
   const target = ns.args[0];
