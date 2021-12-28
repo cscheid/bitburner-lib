@@ -17,12 +17,12 @@ export async function main(ns) {
     await ns.killall(node.name);
     let ram = await ns.getScriptRam("/program/hack.js");
     let maxRam = node.maxRam;
-    let threads = ~~(ram / maxRam);
+    let threads = ~~(maxRam / ram);
     if (threads > 0) {
       ns.tprint(`${node.name}: ${threads} threads`);
       await ns.exec("/program/hack.js", node.name, threads, target);
     } else {
-      ns.tprint(`Can't use ${node.name}, ${ram} < ${maxRam}`);
+      ns.tprint(`Can't use ${node.name}, ${maxRam} < ${ram}`);
     }
   }
 }
