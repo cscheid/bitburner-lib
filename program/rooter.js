@@ -6,6 +6,7 @@ export async function main(ns) {
   let hosts = [];
   let currentLevel = ns.getHackingLevel();
   let scan = await visit(ns, host => hosts.push(host));
+  
   hosts = hosts
     .filter(host => (host.requiredHackingLevel <= currentLevel))
     .map(host => host.name);
