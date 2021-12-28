@@ -5,6 +5,7 @@ import algorithmicStockTraderII from "/contracts/algorithmic-stock-trader-ii.js"
 import uniquePathsInAGridII from "/contracts/unique-paths-in-a-grid-ii.js";
 import subarrayMaximumSum from "/contracts/subarray-maximum-sum.js";
 import findLargestPrimeFactor from "/contracts/find-largest-prime-factor.js";
+import mergeOverlappingIntervals from "/contracts/merge-overlapping-intervals.js";
 
 let dispatch = {
   "Find All Valid Math Expressions": findAllValidMathExpressions,
@@ -13,7 +14,8 @@ let dispatch = {
   "Algorithmic Stock Trader II": algorithmicStockTraderII,
   "Subarray with Maximum Sum": subarrayMaximumSum,
   "Array Jumping Game": arrayJumpingGame,
-  "Find Largest Prime Factor": findLargestPrimeFactor
+  "Find Largest Prime Factor": findLargestPrimeFactor,
+  "Merge Overlapping Intervals": mergeOverlappingIntervals
 };
 
 function solve(ns, filename, host)
