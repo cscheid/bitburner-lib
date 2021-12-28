@@ -23,6 +23,9 @@ export async function main(ns) {
   let host = ns.args[1];
   ns.tprint(`Attempting to solve ${host}:${filename}`);
   let solution = solve(ns, filename, host);
+  if (solution === undefined) {
+    return;
+  }
   ns.tprint(`Done!`);
   let result = ns.codingcontract.attempt(solution, filename, host, { returnReward: true });
   ns.tprint(`Outcome: ${result}`);
