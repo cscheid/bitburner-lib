@@ -20,7 +20,7 @@ let dispatch = {
   "Merge Overlapping Intervals": mergeOverlappingIntervals
 };
 
-function solve(ns, filename, host)
+export function solve(ns, filename, host)
 {
   let type = ns.codingcontract.getContractType(filename, host);
   if (dispatch[type] === undefined) {
