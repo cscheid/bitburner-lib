@@ -9,6 +9,6 @@ files = subprocess.run(
 with open("install_files_json.txt", "w") as output:
     output.write(json.dumps({
         "welcomeLabel": "cscheid/bitburner-lib: hello",
-        "filesToDownload": list(f[2:] for f in files)
+        "filesToDownload": list(f[2:] for f in files if not f[2:].startswith(".#"))
         }))
 
