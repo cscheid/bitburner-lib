@@ -3,6 +3,7 @@ import findAllValidMathExpressions from "/contracts/find-all-valid-math-expressi
 import algorithmicStockTraderI from "/contracts/algorithmic-stock-trader-i.js";
 import algorithmicStockTraderII from "/contracts/algorithmic-stock-trader-ii.js";
 import algorithmicStockTraderIII from "/contracts/algorithmic-stock-trader-iii.js";
+import algorithmicStockTraderIV from "/contracts/algorithmic-stock-trader-iv.js";
 import uniquePathsInAGridII from "/contracts/unique-paths-in-a-grid-ii.js";
 import subarrayMaximumSum from "/contracts/subarray-maximum-sum.js";
 import findLargestPrimeFactor from "/contracts/find-largest-prime-factor.js";
@@ -18,6 +19,7 @@ let dispatch = {
   "Algorithmic Stock Trader I": algorithmicStockTraderI,
   "Algorithmic Stock Trader II": algorithmicStockTraderII,
   "Algorithmic Stock Trader III": algorithmicStockTraderIII,
+  "Algorithmic Stock Trader IV": algorithmicStockTraderIV,
   "Subarray with Maximum Sum": subarrayMaximumSum,
   "Array Jumping Game": arrayJumpingGame,
   "Find Largest Prime Factor": findLargestPrimeFactor,

@@ -1,5 +1,6 @@
 import { visit, totalPorts, openAllPorts } from "/lib/net.js";
 import { bestActionAt } from "/lib/hack.js";
+import { logNow } from "/lib/log.js";
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -16,9 +17,18 @@ export async function main(ns) {
     let target;
     let dispatch = {
       "best": async () => await bestActionAt(ns, target),
-      "grow": async () => await ns.grow(target.name),
-      "weaken": async () => await ns.weaken(target.name),
-      "hack": async () => await ns.hack(target.name)
+      "grow": async () => {
+        await logNow(ns);
+        await ns.grow(target.name);
+      },
+      "weaken": async () => {
+        await logNow(ns);
+        await ns.weaken(target.name);
+      },
+      "hack": async () => {
+        await logNow(ns);
+        await ns.hack(target.name);
+      }
     };
     await visit(ns, (node) => {
       if (node.name === name) {
