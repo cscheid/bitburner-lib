@@ -21,5 +21,9 @@ function solve(ns, filename, host)
 export async function main(ns) {
   let filename = ns.args[0];
   let host = ns.args[1];
-  ns.tprint(solve(ns, filename, host));
+  ns.tprint(`Attempting to solve ${host}:${filename}`);
+  let solution = solve(ns, filename, host);
+  ns.tprint(`Done!`);
+  let result = ns.codingcontract.attempt(solution, filename, host, { returnReward: true });
+  ns.tprint(`Outcome: ${result}`);
 }
