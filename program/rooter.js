@@ -1,4 +1,3 @@
-/** @param {NS} ns */
 import { visit, totalPorts, openAllPorts } from "/lib/net.js";
 
 function rootNode(ns, name) {
@@ -6,6 +5,7 @@ function rootNode(ns, name) {
   ns.nuke(name);
 }
 
+/** @param {NS} ns */
 export async function main(ns) {
   while (true) {
     let hosts = [];
