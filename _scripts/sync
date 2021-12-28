@@ -1,0 +1,5 @@
+#!/bin/bash
+
+./_scripts/make_config.py
+git commit -a -m"update"
+git push origin main
