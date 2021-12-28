@@ -13,7 +13,7 @@ export async function main(ns) {
 	let net = await scanAnalyze(ns, "home", 100);
   ns.tprint(targetPath.join(" -> "));
   command("home");
-  for (const host of targetPath) {
+  for (const host of targetPath.slice(1)) {
     command(`connect ${host}`);
   }
 }
