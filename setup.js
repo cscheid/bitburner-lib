@@ -19,4 +19,5 @@ export async function main(ns) {
     await command(`unalias ${shortcut}`);
     await command(`alias ${shortcut}="run ${file}"`);
   }
+  await command(`cls`);
 }
