@@ -1,8 +1,10 @@
 import arrayJumpingGame from "/contracts/array-jumping-game.js";
 import findAllValidMathExpressions from "/contracts/find-all-valid-math-expressions.js";
+import algorithmicStockTraderI from "/contracts/algorithmic-stock-trader-i.js";
 
 let dispatch = {
   "Find All Valid Math Expressions": findAllValidMathExpressions,
+  "Algorithmic Stock Trader I": algorithmicStockTraderI
 };
 
 function solve(ns, filename, host)
