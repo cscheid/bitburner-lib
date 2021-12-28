@@ -6,10 +6,12 @@ import uniquePathsInAGridII from "/contracts/unique-paths-in-a-grid-ii.js";
 import subarrayMaximumSum from "/contracts/subarray-maximum-sum.js";
 import findLargestPrimeFactor from "/contracts/find-largest-prime-factor.js";
 import mergeOverlappingIntervals from "/contracts/merge-overlapping-intervals.js";
+import uniquePathsInAGrid from "/contracts/unique-paths-in-a-grid.js";
 
 let dispatch = {
   "Find All Valid Math Expressions": findAllValidMathExpressions,
   "Unique Paths in a Grid II": uniquePathsInAGridII,
+  "Unique Paths in a Grid": uniquePathsInAGrid,
   "Algorithmic Stock Trader I": algorithmicStockTraderI,
   "Algorithmic Stock Trader II": algorithmicStockTraderII,
   "Subarray with Maximum Sum": subarrayMaximumSum,

@@ -23,3 +23,5 @@ function solveIt(num)
   }
   return Math.max(maxDivided, num);
 }
+
+export default solveIt;

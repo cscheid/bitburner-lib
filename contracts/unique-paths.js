@@ -12,3 +12,5 @@ function uniquePaths(i, j, memo)
   memo[key] = result;
   return result;
 }
+
+export default uniquePaths;
