@@ -33,3 +33,5 @@ function solveIt(array)
   };
   return inner(0);
 }
+
+export default solveIt;
