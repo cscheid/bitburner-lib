@@ -14,11 +14,13 @@ export async function main(ns) {
   ns.tprint(`Will loic ${target} using ${JSON.stringify(lst.map(node => node.name))}`);
   
   for (const node of lst) {
-    ns.tprint(node.name);
     await ns.killall(node.name);
     let ram = await ns.getScriptRam("/program/hack.js");
     let maxRam = node.maxRam;
     let threads = ~~(ram / maxRam);
-    await ns.exec("/program/hack.js", node.name, threads, target);
+    if (threads > 0) {
+      ns.tprint(`${node.name}: ${threads} threads`);
+      await ns.exec("/program/hack.js", node.name, threads, target);
+    }
   }
 }
