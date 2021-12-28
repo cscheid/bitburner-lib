@@ -38,10 +38,12 @@ export async function main(ns) {
 
   const fmt = (v) => String(~~(v * 100) / 100);
   
-  const out = [["name", "security level", "money"]];
+  const out = [["name", "minsec", "sec", "maxmoney", "money"]];
   hosts.forEach(host => {
     out.push([host.name,
-              fmt(host.securityLevel),
+              fmt(host.minSecurity),
+              fmt(host.security),
+              fmt(host.maxMoney),
               fmt(host.money)]);
   });
   ns.tprint("\n\n" + formatTable(out));
