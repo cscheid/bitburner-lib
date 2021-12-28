@@ -21,6 +21,8 @@ export async function main(ns) {
     if (threads > 0) {
       ns.tprint(`${node.name}: ${threads} threads`);
       await ns.exec("/program/hack.js", node.name, threads, target);
+    } else {
+      ns.tprint(`Can't use ${node.name}, ${ram} < ${maxRam}`);
     }
   }
 }
