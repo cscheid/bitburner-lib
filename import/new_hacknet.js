@@ -39,7 +39,7 @@ function getOptions(ns) {
 }
 
 async function manageBuying(ns) {
-    let input = await ns.read("data/hacknet-rewards.txt");
+    let input = await ns.read("/data/hacknet-rewards.txt");
     // ns.tprint(input);
     let rewards = JSON.parse(input);
     let stopped = false;
@@ -67,7 +67,7 @@ async function manageBuying(ns) {
 
         if (rewList.length === 0) {
             ns.tprint("No more options, hacknet done!");
-            await ns.write("data/hacknet-rewards.txt", JSON.stringify(rewards, null, 2), "w");
+            await ns.write("/data/hacknet-rewards.txt", JSON.stringify(rewards, null, 2), "w");
             break;
         }
         let bestReward = rewList[0];
@@ -93,7 +93,7 @@ async function manageBuying(ns) {
             }
 
             bestReward.productionDelta = newProduction - currentProduction;
-            await ns.write("data/hacknet-rewards.txt", JSON.stringify(rewards, null, 2), "w");
+            await ns.write("/data/hacknet-rewards.txt", JSON.stringify(rewards, null, 2), "w");
         } else {
             if (!stopped)
                 ns.tprint(`would ${bestReward.what} but not rich enough. Waiting.`);
