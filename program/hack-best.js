@@ -1,6 +1,7 @@
-/** @param {NS} ns */
 import { visit, totalPorts, openAllPorts } from "/lib/net.js";
+import { bestActionAt } from "/lib/hack.js";
 
+/** @param {NS} ns */
 export async function main(ns) {
   let securityThresh = 1.5;
   let moneyThresh = 0.5;
@@ -24,17 +25,7 @@ export async function main(ns) {
       await ns.sleep(10000);
       continue;
     }
-    
-    if (bestNode.security > bestNode.minSecurity * securityThresh) {
-      // while security too high, weaken
-      await ns.weaken(bestNode.name);
-    } else if (bestNode.money < bestNode.maxMoney * moneyThresh) {
-      // while too poor, grow
-      await ns.grow(bestNode.name);
-    } else {
-      await ns.hack(bestNode.name);
-    }
-      
-    await ns.sleep(100);
+
+    await bestActionAt(ns, bestNode, securityThresh, moneyThresh);
   }
 }
