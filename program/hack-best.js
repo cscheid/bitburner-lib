@@ -10,7 +10,7 @@ export async function main(ns) {
     let bestNode;
     
     visit(ns, (host) => {
-      if (!host.requiredHackingLevel <= currentLevel)
+      if (host.requiredHackingLevel > currentLevel)
         return;
       
       if (bestNode === undefined || host.maxMoney > bestNode.maxMoney) {
@@ -20,6 +20,7 @@ export async function main(ns) {
     if (bestNode === undefined) {
       ns.print("No nodes to hack. Sleeping...");
       await ns.sleep(10000);
+      continue;
     }
     
     if (bestNode.minSecurity * securityThresh > bestNode.security) {
