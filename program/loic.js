@@ -13,7 +13,8 @@ export async function main(ns) {
   const target = ns.args[0];
   ns.tprint(`Will loic ${target} using ${JSON.stringify(lst.map(node => node.name))}`);
   
-  for (const node in lst) {
+  for (const node of lst) {
+    ns.tprint(node.name);
     await ns.killall(node.name);
     let ram = await ns.getScriptRam("/program/hack.js");
     let maxRam = node.maxRam;
