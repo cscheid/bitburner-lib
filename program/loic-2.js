@@ -5,7 +5,7 @@ import { getLog } from "/program/hack-best-randomized.js";
 
 /** @param {NS} ns */
 export async function main(ns) {
-  let cmd = ns.log[0];
+  let cmd = ns.args[0];
   const lst = [];
   let hackLog = getLog();
   await visit(ns, (node) => {
