@@ -22,7 +22,7 @@ function removeEntry(state, { host, id })
 
 /** @param {NS} ns **/
 export async function main(ns) {
-  let ss = get(ns, "monitor-loic-queue");
+  let ss = getSharedState(ns, "monitor-loic-queue");
   for (const k of Object.keys(ss)) {
     delete ss[k];
   }
@@ -34,7 +34,7 @@ export async function main(ns) {
 
 	while (true) {
 		if (queue.length === 0) {
-		  await ns.sleep(100);
+		  await ns.sleep(1000);
       continue;
 		}
     
