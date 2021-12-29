@@ -30,6 +30,8 @@ export async function main(ns) {
   let queue = ss.queue;
   
   let state = {};
+  ss.state = state;
+  
   let started = performance.now();
 
 	while (true) {
