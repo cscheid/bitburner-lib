@@ -1,4 +1,4 @@
-import { get } from "/lib/shared-state.js";
+import { getSharedState } from "/lib/shared-state.js";
 
 function addEntry(state, { host, id, what, threads, duration })
 {
@@ -22,7 +22,7 @@ function removeEntry(state, { host, id })
 
 /** @param {NS} ns **/
 export async function main(ns) {
-  let ss = get(ns, "monitor-loic-queue");
+  let ss = getSharedState(ns, "monitor-loic-queue");
   for (const k of Object.keys(ss)) {
     delete ss[k];
   }
