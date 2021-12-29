@@ -6,6 +6,11 @@ import { getLog } from "/program/hack-best-randomized.js";
 /** @param {NS} ns */
 export async function main(ns) {
   const lst = [];
+  await visit(ns, (node) => {
+    if (node.hasRootAccess && node.name !== "home") {
+      lst.push(node);
+    }
+  });
 
   let totalThreads = 0;
   for (const node of lst) {

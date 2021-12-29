@@ -25,5 +25,4 @@ export async function main(ns) {
   await ns.disableLog("getHackingLevel");
   
   await ns.exec("/program/monitor-loic.js", "home");
-  await ns.exec("/program/loic-2.js", "home");
 }
