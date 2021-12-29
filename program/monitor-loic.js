@@ -1,3 +1,5 @@
+import { get } from "/lib/shared-state.js";
+
 function addEntry(state, { host, id, what, threads, duration })
 {
   if (state[host] === undefined) {
@@ -20,24 +22,32 @@ function removeEntry(state, { host, id })
 
 /** @param {NS} ns **/
 export async function main(ns) {
-	let port = ns.getPortHandle(1);
-  port.clear();
+  let ss = get(ns, "monitor-loic-queue");
+  for (const k of Object.keys(ss)) {
+    delete ss[k];
+  }
+  ss.queue = [];
+  let queue = ss.queue;
+  
   let state = {};
   let started = performance.now();
 
 	while (true) {
-		if (port.empty()) {
+		if (queue.length === 0) {
 		  await ns.sleep(100);
       continue;
 		}
-    let data = port.read();
-    if (data.log === "start") {
-      addEntry(state, data);
-    } else if (data.log === "end") {
-      removeEntry(state, data);
-    }
-    if (performance.now() - started > 1000) {
-      await ns.write("/log/loic-state.txt", JSON.stringify(state, null, 2), "w");
+    
+    for (const data of queue.splice(0)) {
+      if (data.log === "start") {
+        addEntry(state, data);
+      } else if (data.log === "end") {
+        removeEntry(state, data);
+      }
+      if (performance.now() - started > 1000) {
+        await ns.write("/log/loic-state.txt", JSON.stringify(state, null, 2), "w");
+        started = performance.now();
+      }
     }
 	}
 }
