@@ -1,13 +1,21 @@
-function addEntry(state, host, type, count)
+function addEntry(state, { host, id, what, threads, duration })
 {
   if (state[host] === undefined) {
-    state[host] = {
-      "hack": 0,
-      "weaken": 0,
-      "grow": 0,
-    };
+    state[host] = [];
   }
-  state[host][type] += count;
+  state[host].push({
+    id,
+    what,
+    threads,
+    finishTime: performance.now() + duration
+  });
+  state[host].sort((a, b) => a.finishTime - b.finishTime);
+}
+
+function removeEntry(state, host, id)
+{
+  let ix = state[host].find(d => d.id === id);
+  state[host].splice(ix, 1);
 }
 
 /** @param {NS} ns **/
@@ -22,7 +30,11 @@ export async function main(ns) {
       continue;
 		}
     let data = port.read();
-    addEntry(state, data.host, data.what, data.threads);
+    if (data.log === "start") {
+      addEntry(state, data);
+    } else if (data.log === "end") {
+      removeEntry(state, data);
+    }
     if (performance.now() - started > 1000) {
       await ns.write("/log/loic-state.txt", JSON.stringify(state, null, 2), "w");
     }

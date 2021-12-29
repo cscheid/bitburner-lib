@@ -3,6 +3,8 @@ import { restart } from "/lib/process.js";
 
 /** @param {NS} ns */
 export async function main(ns) {
+  await command("home");
+  await command("killall");
   await ns.exec("/program/copy-all.js", "home");
   await restart(ns, "/program/solve-contracts.js", "home");
   await restart(ns, "/program/rooter.js", "home");
@@ -21,4 +23,7 @@ export async function main(ns) {
   }
   await command(`cls`);
   await ns.disableLog("getHackingLevel");
+  
+  await ns.exec("/program/monitor-loic.js", "home");
+  await ns.exec("/program/loic-2.js", "home");
 }
