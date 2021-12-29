@@ -1,4 +1,4 @@
-import { visit, totalPorts, openAllPorts } from "/lib/net.js";
+import { getNode } from "/lib/net.js";
 import { bestActionAt, bestTarget } from "/lib/hack.js";
 import { randomizedBestActionAt } from "/lib/hack.js";
 
@@ -8,10 +8,21 @@ let log = {};
 export async function main(ns) {
   let securityThresh = 1.5;
   let moneyThresh = 0.5;
+
+  let chosenNode;
+  if (ns.args[0]) {
+    chosenNode = await getNode(ns, ns.args[0]);
+  }
   
   while (true) {
     let currentLevel = await ns.getHackingLevel();
-    let bestNode = await bestTarget(ns);
+
+    let bestNode;
+    if (chosenNode) {
+      bestNode = chosenNode;
+    } else {
+      bestNode = await bestTarget(ns);
+    }
 
     if (bestNode === undefined) {
       ns.print("No nodes to hack. Sleeping...");
