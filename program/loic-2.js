@@ -38,9 +38,9 @@ export async function main(ns) {
     if (threads > 0) {
       ns.tprint(`${node.name}: ${threads} threads`);
       if (threads > 1000) {
-        for (let t = 0; t < threads; t += 10) {
+        for (let t = 0; t < threads; t += 100) {
           // deploy few threads at a time to allow quick retargeting
-          await ns.exec("/program/hack-best-randomized.js", node.name, 10, t);
+          await ns.exec("/program/hack-best-randomized.js", node.name, 100, t);
           await ns.sleep(10); // stagger deployment to avoid clumping
         }
       } else {

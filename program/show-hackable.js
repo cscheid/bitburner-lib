@@ -4,7 +4,7 @@ import { hackMoney, hackTime } from "/lib/hack.js";
 
 /** @param {NS} ns */
 export async function main(ns) {
-  const hosts = [];
+  let hosts = [];
   let hack = ns.getHackingLevel();
   
   await visit(ns, (host) => {
@@ -18,6 +18,10 @@ export async function main(ns) {
   hosts.sort((node1, node2) => (
     hackMoney(ns, node1) / hackTime(ns, node1) -
       hackMoney(ns, node2) / hackTime(ns, node2)));
+
+  if (ns.args[0] !== "-a") {
+    hosts = hosts.slice(-5);
+  }
   
   const out = [["name", "minsec", "sec", "maxmoney", "money"]];
   hosts.forEach(host => {
