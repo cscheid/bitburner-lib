@@ -16,7 +16,7 @@ import minimumPathSumInATriangle from "/contracts/minimum-path-sum-in-a-triangle
 let dispatch = {
   "Find All Valid Math Expressions": findAllValidMathExpressions,
   "Unique Paths in a Grid II": uniquePathsInAGridII,
-  "Unique Paths in a Grid": uniquePathsInAGrid,
+  "Unique Paths in a Grid I": uniquePathsInAGrid,
   "Algorithmic Stock Trader I": algorithmicStockTraderI,
   "Algorithmic Stock Trader II": algorithmicStockTraderII,
   "Algorithmic Stock Trader III": algorithmicStockTraderIII,
