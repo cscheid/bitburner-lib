@@ -26,8 +26,8 @@ export async function main(ns) {
   let started = performance.now();
 
 	while (true) {
-		await ns.sleep(1);		
 		if (port.empty()) {
+		  await ns.sleep(100);
       continue;
 		}
     let data = port.read();
