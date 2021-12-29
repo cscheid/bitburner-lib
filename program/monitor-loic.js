@@ -21,6 +21,7 @@ function removeEntry(state, { host, id })
 /** @param {NS} ns **/
 export async function main(ns) {
 	let port = ns.getPortHandle(1);
+  port.clear();
   let state = {};
   let started = performance.now();
 
