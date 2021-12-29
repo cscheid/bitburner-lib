@@ -20,4 +20,5 @@ export async function main(ns) {
     await command(`alias ${shortcut}="run ${file}"`);
   }
   await command(`cls`);
+  await ns.disableLog("getHackingLevel");
 }

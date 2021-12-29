@@ -5,22 +5,19 @@ import { getLog } from "/program/hack-best-randomized.js";
 
 /** @param {NS} ns */
 export async function main(ns) {
-  let cmd = ns.args[0];
+  const nodesToUse = new Set(ns.args);
   const lst = [];
-  let hackLog = getLog();
+  
   await visit(ns, (node) => {
-    // if incremental, only touch nodes that have no logs
-    if (cmd === "incremental") {
-      if (hackLog[node.name] !== undefined) {
-        return;
-      }
+    if (nodesToUse.size !== 0 && !nodesToUse.has(node.name)) {
+      ns.tprint(`Skipping ${node.name}`);
+      return;
     }
+    
     if (node.hasRootAccess && node.name !== "home") {
       lst.push(node);
     }
   });
-  let msg;
-  ns.tprint(msg);
 
   let totalThreads = 0;
   for (const node of lst) {

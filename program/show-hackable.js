@@ -1,5 +1,6 @@
 import { visit, totalPorts, openAllPorts } from "/lib/net.js";
 import { formatTable } from "/lib/fmt.js";
+import { hackMoney, hackTime } from "/lib/hack.js";
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -13,6 +14,8 @@ export async function main(ns) {
   });
 
   const fmt = (v) => String(Math.round(v * 100) / 100);
+
+  hosts.sort(node => hackMoney(ns, node) / hackTime(ns, node));
   
   const out = [["name", "minsec", "sec", "maxmoney", "money"]];
   hosts.forEach(host => {
