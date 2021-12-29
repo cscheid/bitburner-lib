@@ -3,14 +3,12 @@ import { restart } from "/lib/process.js";
 
 /** @param {NS} ns */
 export async function main(ns) {
-  await command("home");
-  await command("killall");
   await ns.exec("/program/copy-all.js", "home");
   await restart(ns, "/program/solve-contracts.js", "home");
   await restart(ns, "/program/rooter.js", "home");
 
   await command(`unalias install`);
-  await command(`alias install="run install.js"`);
+  await command(`alias install="home; killall; run install.js"`);
   
   for (const file of await ns.ls("home", "/program/")) {
     if (!file.startsWith("/program/")) {
