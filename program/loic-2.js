@@ -1,11 +1,20 @@
 import { command } from "/lib/ui/terminal.js";
 import { restart } from "/lib/process.js";
 import { visit } from "/lib/net.js";
+import { getLog } from "/program/hack-best-randomized.js";
 
 /** @param {NS} ns */
 export async function main(ns) {
+  let cmd = ns.log[0];
   const lst = [];
+  let hackLog = getLog();
   await visit(ns, (node) => {
+    // if incremental, only touch nodes that have no logs
+    if (cmd === "incremental") {
+      if (hackLog[node.name] !== undefined) {
+        return;
+      }
+    }
     if (node.hasRootAccess && node.name !== "home") {
       lst.push(node);
     }
