@@ -64,9 +64,14 @@ export async function main(ns) {
 
   let count = 0;
   for (let filename of filesToDownload) {
-	  await downloadFromGH(ns, filename, '/' + filename);
-    ++count;
-    ns.tprint(`Installed ${count}/${filesToDownload.length}: ${filename}`);
+    try {
+	    await downloadFromGH(ns, filename, '/' + filename);
+      ++count;
+      ns.tprint(`Installed ${count}/${filesToDownload.length}: ${filename}`);
+    } catch (e) {
+      ns.tprint(String(e));
+      ++count;
+    }
   }
   
   ns.tprint("Install complete!");
