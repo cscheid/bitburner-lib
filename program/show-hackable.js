@@ -15,7 +15,9 @@ export async function main(ns) {
 
   const fmt = (v) => String(Math.round(v * 100) / 100);
 
-  hosts.sort(node => hackMoney(ns, node) / hackTime(ns, node));
+  hosts.sort((node1, node2) => (
+    hackMoney(ns, node1) / hackTime(ns, node1) -
+      hackMoney(ns, node2) / hackTime(ns, node2)));
   
   const out = [["name", "minsec", "sec", "maxmoney", "money"]];
   hosts.forEach(host => {
