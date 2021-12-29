@@ -12,7 +12,7 @@ function addEntry(state, { host, id, what, threads, duration })
   state[host].sort((a, b) => a.finishTime - b.finishTime);
 }
 
-function removeEntry(state, host, id)
+function removeEntry(state, { host, id })
 {
   let ix = state[host].find(d => d.id === id);
   state[host].splice(ix, 1);
