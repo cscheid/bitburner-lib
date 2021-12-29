@@ -11,6 +11,7 @@ import mergeOverlappingIntervals from "/contracts/merge-overlapping-intervals.js
 import uniquePathsInAGrid from "/contracts/unique-paths.js";
 import generateIpAddresses from "/contracts/generate-ip-addresses.js";
 import totalWaysToSum from "/contracts/total-ways-to-sum.js";
+import minimumPathSumInATriangle from "/contracts/minimum-path-sum-in-a-triangle.js";
 
 let dispatch = {
   "Find All Valid Math Expressions": findAllValidMathExpressions,
@@ -26,6 +27,7 @@ let dispatch = {
   "Merge Overlapping Intervals": mergeOverlappingIntervals,
   "Generate IP Addresses": generateIpAddresses,
   "Total Ways to Sum": totalWaysToSum,
+  "Minimum Path Sum in a Triangle": minimumPathSumInATriangle
 };
 
 export function solve(ns, filename, host)
