@@ -37,10 +37,18 @@ export async function main(ns) {
     let threads = ~~(maxRam / ram);
     if (threads > 0) {
       ns.tprint(`${node.name}: ${threads} threads`);
-      for (let t = 0; t < threads; ++t) {
-        // deploy one thread at a time to allow quick retargeting
-        await ns.exec("/program/hack-best-randomized.js", node.name, 1, t);
-        await ns.sleep(10); // stagger deployment to avoid clumping
+      if (threads > 1000) {
+        for (let t = 0; t < threads; t += 10) {
+          // deploy few threads at a time to allow quick retargeting
+          await ns.exec("/program/hack-best-randomized.js", node.name, 10, t);
+          await ns.sleep(10); // stagger deployment to avoid clumping
+        }
+      } else {
+        for (let t = 0; t < threads; ++t) {
+          // deploy one thread at a time to allow quick retargeting
+          await ns.exec("/program/hack-best-randomized.js", node.name, 1, t);
+          await ns.sleep(10); // stagger deployment to avoid clumping
+        }
       }
     } else {
       ns.tprint(`Can't use ${node.name}, ${maxRam} < ${ram}`);
