@@ -58,7 +58,7 @@ export async function main(ns) {
         addEntry(state, data);
       } else if (data.log === "end") {
         removeEntry(state, data);
-        addCount(state, data);
+        addCount(counts, data);
       }
     }
 	}

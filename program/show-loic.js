@@ -8,6 +8,7 @@ export async function main(ns) {
 
   let summary = [["host", "hack", "grow", "weaken"]];
   
+  summary.push(["(state)", "", "", ""]);
   for (const [host, actions] of Object.entries(state)) {
     let status = {
       "hack": 0,
@@ -23,14 +24,15 @@ export async function main(ns) {
                   String(status.weaken)]);
   }
 
-  for (const [host, counts] of Object.entries(counts)) {
+  summary.push(["(counts)", "", "", ""]);
+  for (const [host, c] of Object.entries(counts)) {
     summary.push([host,
-                  String(counts.hack),
-                  String(counts.grow),
-                  String(counts.weaken)]);
+                  String(c.hack),
+                  String(c.grow),
+                  String(c.weaken)]);
   }
   
   let t1 = formatTable(summary);
-  let t2 = formatTable(summary);
-  ns.tprint(JSON.stringify(summary, null, 2));
+
+  ns.tprint("\n\n" + t1);
 }
