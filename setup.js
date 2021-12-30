@@ -16,8 +16,14 @@ export async function main(ns)
   }
 
   await copyAll(ns);
-  
-  await restart(ns, "/program/solve-contracts.js", "home");
+
+  let homeRam = await ns.getServerMaxRam("home");
+
+  // Only run this when our home computer is big enough
+  if (homeRam >= 1024) {
+    await restart(ns, "/program/solve-contracts.js", "home");
+  }
+    
   await restart(ns, "/program/rooter.js", "home");
   await restart(ns, "/program/monitor-loic.js", "home");
 
