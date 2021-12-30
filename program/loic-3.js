@@ -10,8 +10,8 @@ export async function main(ns) {
   let nodesToAdd = ns.args.slice(1);
   await visit(ns, (node) => {
     if (node.hasRootAccess &&
-        nodesToAdd.length > 0 &&
-        (nodesToAdd.indexOf(node.name) !== -1)) {
+        ((nodesToAdd.length === 0) ||
+         (nodesToAdd.indexOf(node.name) !== -1))) {
       lst.push(node);
     }
   });
