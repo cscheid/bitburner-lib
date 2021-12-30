@@ -7,7 +7,7 @@ function rootNode(ns, name) {
 
 /** @param {NS} ns */
 export async function main(ns) {
-  let d = document; // make the static RAM calculator give us lots of room.
+  // let d = document; // make the static RAM calculator give us lots of room.
   while (true) {
     let hosts = [];
     let scan = await visit(ns, host => hosts.push(host));

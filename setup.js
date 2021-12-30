@@ -3,15 +3,8 @@ import { restart } from "/lib/process.js";
 import { copyAll } from "/program/copy-all.js";
 
 /** @param {NS} ns */
-export async function main(ns) {
-  await copyAll(ns);
-  
-  await restart(ns, "/program/solve-contracts.js", "home");
-  await restart(ns, "/program/rooter.js", "home");
-
-  await command(`unalias install`);
-  await command(`alias install="home; killall; run install.js"`);
-  
+export async function main(ns)
+{
   for (const file of await ns.ls("home", "/program/")) {
     if (!file.startsWith("/program/")) {
       continue;
@@ -21,8 +14,16 @@ export async function main(ns) {
     await command(`unalias ${shortcut}`);
     await command(`alias ${shortcut}="run ${file}"`);
   }
-  await command(`cls`);
-  await ns.disableLog("getHackingLevel");
+
+  await copyAll(ns);
   
-  await ns.exec("/program/monitor-loic.js", "home");
+  await restart(ns, "/program/solve-contracts.js", "home");
+  await restart(ns, "/program/rooter.js", "home");
+  await restart(ns, "/program/monitor-loic.js", "home");
+
+  await command(`unalias install`);
+  await command(`alias install="home; killall; run install.js"`);
+  
+  await command(`cls`);
+  await ns.disableLog("getHackingLevel");  
 }
