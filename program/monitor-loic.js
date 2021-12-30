@@ -14,6 +14,18 @@ function addEntry(state, { host, id, what, threads, duration })
   state[host].sort((a, b) => a.finishTime - b.finishTime);
 }
 
+function addCount(state, { host, what, threads })
+{
+  if (state[host] === undefined) {
+    state[host] = {
+      "hack": 0,
+      "grow": 0,
+      "weaken": 0
+    };
+  }
+  state[host][what] += threads;
+}
+
 function removeEntry(state, { host, id })
 {
   let ix = state[host].find(d => d.id === id);
@@ -31,9 +43,10 @@ export async function main(ns) {
   
   let state = {};
   ss.state = state;
-  
-  let started = performance.now();
 
+  let counts = {};
+  ss.counts = counts;
+  
 	while (true) {
 		if (queue.length === 0) {
 		  await ns.sleep(1000);
@@ -45,10 +58,7 @@ export async function main(ns) {
         addEntry(state, data);
       } else if (data.log === "end") {
         removeEntry(state, data);
-      }
-      if (performance.now() - started > 1000) {
-        await ns.write("/log/loic-state.txt", JSON.stringify(state, null, 2), "w");
-        started = performance.now();
+        addCount(state, data);
       }
     }
 	}
