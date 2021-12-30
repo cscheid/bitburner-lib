@@ -6,11 +6,16 @@ import { getLog } from "/program/hack-best-randomized.js";
 /** @param {NS} ns */
 export async function main(ns) {
   const lst = [];
+  let target = ns.args[0];
+  let nodesToAdd = ns.args.slice(1);
   await visit(ns, (node) => {
-    if (node.hasRootAccess) {
+    if (node.hasRootAccess &&
+        nodesToAdd.length > 0 &&
+        (nodesToAdd.indexOf(node.name) !== -1)) {
       lst.push(node);
     }
   });
+
 
   let totalThreads = 0;
   for (const node of lst) {
@@ -35,19 +40,19 @@ export async function main(ns) {
       if (threads > 100000) {
         for (let t = 0; t < threads; t += 1000) {
           // deploy few threads at a time to allow quick retargeting
-          await ns.exec("/program/hack-best-randomized.js", node.name, 1000, ns.args[0], t);
+          await ns.exec("/program/hack-best-randomized.js", node.name, 1000, target, t);
           await ns.sleep(10); // stagger deployment to avoid clumping
         }
       } else if (threads > 1000) {
         for (let t = 0; t < threads; t += 100) {
           // deploy few threads at a time to allow quick retargeting
-          await ns.exec("/program/hack-best-randomized.js", node.name, 100, ns.args[0], t);
+          await ns.exec("/program/hack-best-randomized.js", node.name, 100, target, t);
           await ns.sleep(10); // stagger deployment to avoid clumping
         }
       } else {
         for (let t = 0; t < threads; ++t) {
           // deploy one thread at a time to allow quick retargeting
-          await ns.exec("/program/hack-best-randomized.js", node.name, 1, ns.args[0], t);
+          await ns.exec("/program/hack-best-randomized.js", node.name, 1, target, t);
           await ns.sleep(10); // stagger deployment to avoid clumping
         }
       }
