@@ -15,7 +15,7 @@ export async function main(ns) {
     for (const node of factionNodes) {
       if (ns.fileExists(node.file, "home") &&
           ns.hasRootAccess(node.node) &&
-          (await getNode(ns, node)).requiredHackingLevel <= level) {
+          (await getNode(ns, node.node)).requiredHackingLevel <= level) {
         await command("home");
         await command("go CSEC");
         await command("backdoor");
