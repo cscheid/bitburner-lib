@@ -1,4 +1,5 @@
 // lots of inspiration from https://github.com/lethern/Bitburner_os/blob/main/install.js
+import { command } from "/lib/ui/terminal.js";
 
 let owner = "cscheid";
 let repo = "bitburner-lib";
@@ -57,7 +58,7 @@ export async function main(ns) {
   let hostname = ns.getHostname();
 
   if (hostname !== 'home') {
-	  throw new Error('Run the script from home');
+    command("home");
   }
   ns.tprint("Will download files.");
   ns.print(JSON.stringify(filesToDownload, null, 2));
@@ -75,7 +76,9 @@ export async function main(ns) {
   }
   
   ns.tprint("Install complete!");
-  await ns.run("setup.js", 1);
+  if (ns.args[0] !== "-n") { // no setup or reset {
+    await ns.run("setup.js", 1);
+  }
 }
 
 
