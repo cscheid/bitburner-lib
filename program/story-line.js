@@ -17,7 +17,9 @@ export async function main(ns) {
           ns.hasRootAccess(node.node) &&
           (await getNode(ns, node.node)).requiredHackingLevel <= level) {
         await command("home");
-        await command("go CSEC");
+        await ns.sleep(1000);
+        await command(`go ${node.node}`);
+        await ns.sleep(1000);
         await command("backdoor");
         await ns.sleep(5000);
       }
