@@ -46,8 +46,11 @@ function solveIt([str, target])
       continue;
     for (const v of allJoins(split)) {
       // may the lord have mercy on my soul
-      if (eval(v) === target) {
-        result.push(v);
+      try {
+        if (eval(v) === target) {
+          result.push(v);
+        }
+      } catch (e) {
       }
     }
   }
