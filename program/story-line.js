@@ -1,5 +1,4 @@
 import { command } from "/lib/ui/terminal.js";
-import { getNode } from "/lib/net.js";
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -13,9 +12,11 @@ export async function main(ns) {
   }];
   while (true) {
     for (const node of factionNodes) {
+      let server = await ns.getServer(node.node);
       if (ns.fileExists(node.file, "home") &&
           ns.hasRootAccess(node.node) &&
-          (await getNode(ns, node.node)).requiredHackingLevel <= level) {
+          server.backdoorInstalled === false &&
+          server.requiredHackingSkill <= level) {
         await command("home");
         await ns.sleep(1000);
         await command(`go ${node.node}`);
