@@ -13,6 +13,7 @@ import generateIpAddresses from "/contracts/generate-ip-addresses.js";
 import totalWaysToSum from "/contracts/total-ways-to-sum.js";
 import minimumPathSumInATriangle from "/contracts/minimum-path-sum-in-a-triangle.js";
 import sanitizeParenthesesInExpression from "/contracts/sanitize-parentheses-in-expression.js";
+import spiralizeMatrix from "/contracts/spiralize-matrix.js";
 
 let dispatch = {
   "Find All Valid Math Expressions": findAllValidMathExpressions,
@@ -29,7 +30,8 @@ let dispatch = {
   "Generate IP Addresses": generateIpAddresses,
   "Total Ways to Sum": totalWaysToSum,
   "Minimum Path Sum in a Triangle": minimumPathSumInATriangle,
-  "Sanitize Parentheses in Expression": sanitizeParenthesesInExpression
+  "Sanitize Parentheses in Expression": sanitizeParenthesesInExpression,
+  "Spiralize Matrix": spiralizeMatrix
 };
 
 export function solve(ns, filename, host)
