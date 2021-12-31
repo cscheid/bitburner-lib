@@ -28,6 +28,9 @@ function addCount(state, { host, what, threads })
 
 function removeEntry(state, { host, id })
 {
+  if (state[host] === undefined) {
+    state[host] = [];
+  }
   let ix = state[host].find(d => d.id === id);
   state[host].splice(ix, 1);
 }
