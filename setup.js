@@ -20,12 +20,13 @@ export async function main(ns)
   let homeRam = await ns.getServerMaxRam("home");
 
   // Only run this when our home computer is big enough
-  if (homeRam >= 1024) {
+  if (homeRam >= 512) {
     await restart(ns, "/program/solve-contracts.js", "home");
   }
     
   await restart(ns, "/program/rooter.js", "home");
   await restart(ns, "/program/monitor-loic.js", "home");
+  await restart(ns, "/program/story-line.js", "home");
 
   await command(`unalias install`);
   await command(`alias install="home; killall; run install.js"`);

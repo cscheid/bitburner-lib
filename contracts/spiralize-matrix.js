@@ -23,3 +23,5 @@ function solveIt(data)
   }
   return [...data[0], ...solveIt(rotate(data.slice(1)))];
 }
+
+export default solveIt;
