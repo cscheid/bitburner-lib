@@ -7,7 +7,7 @@ function rootNode(ns, name) {
 
 /** @param {NS} ns */
 export async function main(ns) {
-  let appeaseRAM = ns.brutessh;
+  let appeaseRAM = ns.brutessh || ns.httpworm || ns.sqlinject || ns.relaysmtp || ns.ftpcrack;
   // let d = document; // make the static RAM calculator give us lots of room.
   while (true) {
     let hosts = [];
