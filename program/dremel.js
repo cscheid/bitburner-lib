@@ -19,12 +19,12 @@ export async function dremel(ns, target, host)
     let needNap = false;
     if (step.weaken > 0) {
       await ns.tprint("weaken");
-      await ns.exec("/program/dumb-weaken.js", target.hostname, step.weaken);
+      await ns.exec("/program/dumb-weaken.js", host.hostname, step.weaken, target.hostname);
       needNap = true;
     }
     if (step.grow > 0) {
       await ns.tprint("grow");
-      await ns.exec("/program/dumb-grow.js", target.hostname, step.grow);
+      await ns.exec("/program/dumb-grow.js", host.hostname, step.grow, target.hostname);
       needNap = true;
     }
     if (step.time > 0) {
@@ -85,7 +85,7 @@ export async function dremel(ns, target, host)
       events.push({
         run: async () => {
           await ns.tprint("weaken");
-          await ns.exec("/program/dumb-weaken.js", host.hostname, loopPlan.weaken, step);
+          await ns.exec("/program/dumb-weaken.js", host.hostname, loopPlan.weaken, target.hostname, step);
         },
         when: weakenStartT
       });
@@ -101,7 +101,7 @@ export async function dremel(ns, target, host)
         run: async () => {
           await ns.tprint("hack");
           console.log("calling hack");
-          await ns.exec("/program/dumb-hack.js", host.hostname, loopPlan.hack, step);
+          await ns.exec("/program/dumb-hack.js", host.hostname, loopPlan.hack, target.hostname, step);
         },
         when: hackStartT
       });
@@ -116,7 +116,7 @@ export async function dremel(ns, target, host)
         run: async () => {
           await ns.tprint("grow");
           console.log("calling grow");
-          await ns.exec("/program/dumb-grow.js", host.hostname, loopPlan.grow, step);
+          await ns.exec("/program/dumb-grow.js", host.hostname, loopPlan.grow, target.hostname, step);
         },
         when: growStartT
       });
