@@ -3,6 +3,7 @@ import * as formulas from "/lib/bb/formulas.js";
 
 export async function dremel(ns, target, host)
 {
+  debugger;
   let ramCost = 1.75;
 
   let availableRam = host.maxRam - host.ramUsed;
@@ -18,12 +19,12 @@ export async function dremel(ns, target, host)
   for (const step of await planBootstrap(ns, target, host, budget)) {
     let needNap = false;
     if (step.weaken > 0) {
-      await ns.tprint("weaken");
+      await ns.tprint(`weaken ${step.weaken}`);
       await ns.exec("/program/dumb-weaken.js", host.hostname, step.weaken, target.hostname);
       needNap = true;
     }
     if (step.grow > 0) {
-      await ns.tprint("grow");
+      await ns.tprint(`grow ${step.grow}`);
       await ns.exec("/program/dumb-grow.js", host.hostname, step.grow, target.hostname);
       needNap = true;
     }
