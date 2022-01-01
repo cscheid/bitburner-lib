@@ -1,21 +1,21 @@
 import { planBootstrap, planLoop } from "/lib/planner.js";
-import formulas from "/lib/bb/formulas.js";
+import * as formulas from "/lib/bb/formulas.js";
 
 export async function dremel(ns, target, host)
 {
   let ramCost = 1.75;
 
-  let availableRam = target.maxRam - target.ramUsed;
+  let availableRam = host.maxRam - host.ramUsed;
   
-  if (target.hostname === "home") {
+  if (host.hostname === "home") {
     // never use full home
-    availableRam = Math.min(availableRam, target.maxRam * 0.75);
+    availableRam = Math.min(availableRam, host.maxRam * 0.75);
   }
 
   let budget = ~~(availableRam / ramCost);
 
   let nap = 100, micronap = 16;
-  for (const step of planBootstrap(ns, target, host, budget)) {
+  for (const step of await planBootstrap(ns, target, host, budget)) {
     let needNap = false;
     if (step.weaken > 0) {
       await ns.tprint("weaken");
@@ -36,7 +36,7 @@ export async function dremel(ns, target, host)
     }
   }
 
-  let loopPlan = planLoop(ns, target, host, budget).maxEfficiency;
+  let loopPlan = (await planLoop(ns, target, host, budget)).maxEfficiency;
   let stepBudget = loopPlan.weaken + loopPlan.grow + loopPlan.hack;
   
   let usedBudget = budget;
