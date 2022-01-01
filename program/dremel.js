@@ -1,5 +1,5 @@
 import * as formulas from "/lib/bb/formulas.js";
-import { planBootstrap, planLoop } from "/lib/planner.js";
+import { planBootstrap, planLoop } from "/lib/bug-workaround.js";
 
 export async function dremel(ns, target, host)
 {
