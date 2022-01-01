@@ -60,7 +60,7 @@ export async function dremel(ns, target, host)
       run: async (event) => {
         let mps = totalGains / ((performance.now() - begin) / 1000);
         let mpsFmt = (~~(mps * 100)) / 100;
-        await ns.tprint(`Hack ${target.hostname} total: ${totalGains} at ${mpsFmt}/s`);
+        await ns.tprint(`${host.hostname} -> ${target.hostname} total: ${totalGains} at ${mpsFmt}/s`);
         addMonitoringEvent();
       }
     });
