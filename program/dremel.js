@@ -45,10 +45,12 @@ export async function dremel(ns, target, host)
   
   let timeOfLatestWeaken = performance.now; // when is it safe to commit the next step?
   
+  let step = 0;
   while (true) {
     let now = performance.now;
     
     // executor step; run all scheduled events.
+    events.sort((a, b) => a.when - b.when);
     for (let i = 0; i < events.length; ++i) {
       let event = events[i];
       if (event.when < now) {
@@ -59,7 +61,6 @@ export async function dremel(ns, target, host)
       }
     }
 
-    let step = 0;
     await ns.sleep(16);
     if (usedBudget >= stepBudget) {
       // schedule a step
