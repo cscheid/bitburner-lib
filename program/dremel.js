@@ -3,7 +3,6 @@ import { planBootstrap, planLoop } from "/lib/planner.js";
 
 export async function dremel(ns, target, host)
 {
-  debugger;
   let ramCost = 1.75;
 
   let availableRam = host.maxRam - host.ramUsed;
@@ -134,5 +133,6 @@ export async function dremel(ns, target, host)
 
 /** @param {NS} ns */
 export async function main(ns) {
+  debugger;
   await dremel(ns, ns.getServer(ns.args[0]), ns.getServer(ns.args[1]));
 }
