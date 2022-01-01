@@ -23,6 +23,7 @@ export async function main(ns) {
         await ns.sleep(1000);
         await command("backdoor");
         await ns.sleep(5000);
+        await command("home");
       }
     }
     await ns.sleep(10000);

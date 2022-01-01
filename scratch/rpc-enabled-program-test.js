@@ -1,7 +1,9 @@
-import { signalDone } from "/lib/rpc.js";
+import { wrapMain } from "/lib/rpc.js";
 
 /** @param {NS} ns */
-export async function main(ns) {
-  await ns.hack(ns.args[0]);
-  await signalDone(ns);
+async function directMain(ns) {
+  let result = await ns.hack(ns.args[0]);
+  return result;
 }
+
+export const main = wrapMain(directMain);
