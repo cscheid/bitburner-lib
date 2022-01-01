@@ -82,7 +82,7 @@ export async function dremel(ns, target, host)
       let hackEndT = growEndT - nap * 2;
       
       let growStartT = growEndT - growDuration;
-      let hackStartT = hackStartT - hackDuration;
+      let hackStartT = hackEndT - hackDuration;
       
       events.push({
         run: async () => {
