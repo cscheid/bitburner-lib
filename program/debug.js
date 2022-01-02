@@ -5,13 +5,13 @@ export async function main(ns)
 {
   switch (ns.args[0]) {
   case "show":
-    showDebug();
+    await showDebug();
     break;
   case "hide":
-    hideDebug();
+    await hideDebug();
     break;
   case "clear":
-    hideDebug();
+    await clearDebug();
     break;
   }
 }
