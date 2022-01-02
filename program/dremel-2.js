@@ -4,7 +4,8 @@ import { planBootstrap, planLoop } from "/lib/bug-workaround.js";
 import * as formulas from "/lib/bb/formulas.js";
 import { hack as hackSim } from "/lib/bb/simulator.js";
 import { ConditionVariable } from "/lib/condition-variable.js";
-import { until } from "/lib/until.js";
+import { getTime, until } from "/lib/time.js";
+import { fmtTime } from "/lib/fmt.js";
 
 class Budget
 {
@@ -137,13 +138,20 @@ export async function dremel(ns, target, host)
     let hackStartT = hackEndT - hackDuration;
     timeOfLatestWeaken = Math.max(timeOfLatestWeaken, weakenEndT);
 
-    if (actual / max > 0.5) {
+    if (actual / max > 0.8) {
       ns.tprint(`Scheduling loop hack to start at ${weakenStartT}`);
       if (loopPlan.weaken > 0) {
         thunks.push((async () => {
           await until(ns, weakenStartT);
-          await weaken(ns, host.hostname, loopPlan.weaken, target.hostname);
-          ns.tprint(`Weaken ${loopPlan.weaken} ${host.hostname} -> ${target.hostname}`);
+          let estDuration = weakenDuration;
+          let estEnd = weakenEndT;
+          let {
+            elapsedTime
+          } = await getTime(() => weaken(ns, host.hostname, loopPlan.weaken, target.hostname));
+          
+          console.log(`Weaken ${loopPlan.weaken} ${host.hostname} -> ${target.hostname}`);
+          console.log(`Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
+          console.log(`Slop in end time: ${fmtTime(weakenEndT - estEnd)}`);
           budgetCond.deposit(loopPlan.weaken);
         })());
       }
