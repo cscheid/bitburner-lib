@@ -165,12 +165,13 @@ export async function dremel(ns, target, host)
           let whichStep = step;
           msg(ns, `[weaken step ${step} nap at ${fmtNow()} until ${fmtTime(weakenStartT/1000)}]`, -2);
           await until(ns, weakenStartT);
-          await canSchedule(() => machineState === "afterWeaken");
+          await canSchedule.wait(() => machineState === "afterWeaken");
           let {
             elapsedTime
           } = await getTime(() => weaken(ns, host.hostname, loopPlan.weaken, target.hostname));
           player = ns.getPlayer();
           machineState = "afterWeaken";
+          canSchedule.notifyAll();
           msg(ns, `(${fmtNow()}) Weaken ${loopPlan.weaken} ${host.hostname} -> ${target.hostname} step ${whichStep}`, -1);
           msg(ns, `  Slop in duration: ${fmtTime((elapsedTime - estDuration)/1000)}`, -2);
           msg(ns, `  Slop in end time: ${fmtTime((performance.now() - estEnd)/1000)}`, -2);
@@ -184,12 +185,13 @@ export async function dremel(ns, target, host)
           let whichStep = step;
           msg(ns, `[grow step ${step} nap at ${fmtNow()} until ${fmtTime(growStartT/1000)}]`, -2);
           await until(ns, growStartT - nap);
-          await canSchedule(() => machineState === "afterWeaken");
+          await canSchedule.wait(() => machineState === "afterWeaken");
           await ns.asleep(nap);
           let {
             elapsedTime
           } = await getTime(() => grow(ns, host.hostname, loopPlan.grow, target.hostname));
           machineState = "afterGrow";
+          canSchedule.notifyAll();
           player = ns.getPlayer();
           msg(ns, `(${fmtNow()}) Grow ${loopPlan.grow} ${host.hostname} -> ${target.hostname} step ${whichStep}`, -1);
           msg(ns, `  Slop in duration: ${fmtTime((elapsedTime - estDuration)/1000)}`, -2);
@@ -204,7 +206,7 @@ export async function dremel(ns, target, host)
           let whichStep = step;
           msg(ns, `[hack step ${step} nap at ${fmtNow()} until ${fmtTime(hackStartT/1000)}]`, -2);
           await until(ns, hackStartT - 2 * nap);
-          await canSchedule(() => machineState === "afterWeaken");
+          await canSchedule.wait(() => machineState === "afterWeaken");
           await ns.asleep(nap * 2);
           let {
             result,
