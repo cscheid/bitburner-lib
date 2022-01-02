@@ -1,4 +1,4 @@
-import { showDebug, hideDebug } from "/lib/ui/debug.js";
+import { showDebug, hideDebug, clearDebug } from "/lib/ui/debug.js";
 
 /** @param {NS} ns */
 export async function main(ns)
@@ -8,6 +8,9 @@ export async function main(ns)
     showDebug();
     break;
   case "hide":
+    hideDebug();
+    break;
+  case "clear":
     hideDebug();
     break;
   }
