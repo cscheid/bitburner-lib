@@ -94,7 +94,7 @@ export async function dremel(ns, target, host)
       
       let mps = totalGains / ((performance.now() - begin) / 1000);
       let mpsFmt = (~~(mps * 100)) / 100;
-      await msg(ns, `${host.hostname} -> ${target.hostname} total: ${totalGains} at ${mpsFmt}/s`);
+      ns.tprint(`${host.hostname} -> ${target.hostname} total: ${totalGains} at ${mpsFmt}/s`);
     }
   };
   let monitorPromise = monitorResults();
@@ -154,8 +154,8 @@ export async function dremel(ns, target, host)
             elapsedTime
           } = await getTime(() => weaken(ns, host.hostname, loopPlan.weaken, target.hostname));
           msg(ns, `Weaken ${loopPlan.weaken} ${host.hostname} -> ${target.hostname}`);
-          msg(ns, `Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
-          msg(ns, `Slop in end time: ${fmtTime(weakenEndT - estEnd)}`);
+          msg(ns, `  Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
+          msg(ns, `  Slop in end time: ${fmtTime(performance.now() - estEnd)}`);
           budgetCond.deposit(loopPlan.weaken);
         })());
       }
@@ -168,8 +168,8 @@ export async function dremel(ns, target, host)
             elapsedTime
           } = await getTime(() => grow(ns, host.hostname, loopPlan.grow, target.hostname));
           msg(ns, `Grow ${loopPlan.grow} ${host.hostname} -> ${target.hostname}`);
-          msg(ns, `Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
-          msg(ns, `Slop in end time: ${fmtTime(weakenEndT - estEnd)}`);
+          msg(ns, `  Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
+          msg(ns, `  Slop in end time: ${fmtTime(performance.now() - estEnd)}`);
           budgetCond.deposit(loopPlan.grow);
         })());
       }
@@ -184,8 +184,9 @@ export async function dremel(ns, target, host)
           } = await getTime(() => hack(ns, host.hostname, loopPlan.hack, target.hostname));
           totalGains += result;
           msg(ns, `Hack ${loopPlan.hack} ${host.hostname} -> ${target.hostname}`);
-          msg(ns, `Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
-          msg(ns, `Slop in end time: ${fmtTime(hackEndT - estEnd)}`);
+          msg(ns, `  Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
+          msg(ns, `  Slop in end time: ${fmtTime(performance.now() - estEnd)}`);
+          msg(ns, `  Slop in reward: ${result - hackGains}`);
           budgetCond.deposit(loopPlan.hack);
         })());
       }
@@ -197,7 +198,7 @@ export async function dremel(ns, target, host)
         thunks.push((async () => {
           await until(ns, weakenStartT);
           await weaken(ns, host.hostname, x.weaken, target.hostname);
-          msg(ns, `Weaken ${x.weaken} ${host.hostname} -> ${target.hostname}`);
+          msg(ns, `bootstrap Weaken ${x.weaken} ${host.hostname} -> ${target.hostname}`);
           budgetCond.deposit(stepBudget);
         })());
       }
@@ -205,7 +206,7 @@ export async function dremel(ns, target, host)
         thunks.push((async () => {
           await until(ns, growStartT);
           return grow(ns, host.hostname, x.grow, target.hostname);
-          msg(ns, `Grow ${x.grow} ${host.hostname} -> ${target.hostname}`);
+          msg(ns, `bootstrap Grow ${x.grow} ${host.hostname} -> ${target.hostname}`);
         })());
       }
     }
