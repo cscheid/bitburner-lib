@@ -70,13 +70,14 @@ export async function dremel(ns, target, host)
   let budget = ~~(availableRam / ramCost);
   let begin = performance.now();
 
-  msg(ns, `Growing ${target.hostname}'s account`, -2);
+  msg(ns, `${fmtNow()}: Dremel ${host.hostname} -> ${target.hostname} start`);
+  msg(ns, `Growing ${target.hostname}'s account`);
   let nap = 1000, micronap = 16;
   for (const step of await planBootstrap(ns, target, host, budget)) {
     await runBootstrapStep(ns, target, host, step);
   }
 
-  msg("hack loop started", -2);
+  msg(ns, "hack loop started", -2);
   target = ns.getServer(target.hostname); // server now has new stats
   
   let usedBudget = budget;
@@ -107,6 +108,11 @@ export async function dremel(ns, target, host)
   if (loopPlan === undefined) {
     throw new Error("Can't find plans!");
   }
+  if (loopPlans.efficiency) {
+    msg(ns, `Using efficient plans`, -2);
+  } else {
+    msg(ns, `Using max-reward plans`, -2);
+  }
   let stepBudget = loopPlan.weaken + loopPlan.grow + loopPlan.hack;
   msg(ns, `Loop plan:\n\n${JSON.stringify(loopPlan)}`, -2);
 
@@ -115,11 +121,14 @@ export async function dremel(ns, target, host)
     await ns.asleep(10);
     await budgetCond.request(stepBudget);
 
-    msg(ns, `Allocated ${stepBudget} threads`, -2);
+    msg(ns, `Allocated ${stepBudget} threads`, -3);
     
     // update target info
     let now = performance.now();
     target = ns.getServer(target.hostname);
+    msg(ns, `Target ${target.hostname} info:`, -1);
+    msg(ns, `  security: ${target.hackDifficulty}`);
+    msg(ns, `  money: ${target.moneyAvailable}`);
     ++step;
 
     let player = ns.getPlayer();
