@@ -4,7 +4,7 @@ import { planBootstrap, planLoop } from "/lib/bug-workaround.js";
 import * as formulas from "/lib/bb/formulas.js";
 import { hack as hackSim } from "/lib/bb/simulator.js";
 import { ConditionVariable } from "/lib/condition-variable.js";
-import { until } from "/lib/";
+import { until } from "/lib/until.js";
 
 class Budget
 {
@@ -88,24 +88,6 @@ export async function dremel(ns, target, host)
   let totalGains = 0;
   
   let events = [];
-  const schedule = (event) => {
-    events.push(event);
-  };
-  const executeEvents = () => {
-    // executor step; run all scheduled events.
-    events.sort((a, b) => a.when - b.when);
-
-    const now = performance.now();
-    for (let i = 0; i < events.length; ++i) {
-      let event = events[i];
-      if (event.when < now) {
-        event.run(event);
-      } else {
-        events = events.slice(i);
-        break;
-      }
-    }
-  };
   
   const monitorResults = async () => {
     while (true) {
@@ -116,17 +98,14 @@ export async function dremel(ns, target, host)
       await ns.tprint(`${host.hostname} -> ${target.hostname} total: ${totalGains} at ${mpsFmt}/s`);
     }
   };
-  let monitorPromise = new monitorResults();
+  let monitorPromise = monitorResults();
   let budgetCond = new Budget(usedBudget);
 
   while (true) {
-    let now = performance.now();
-    // update target info
-
-    executeEvents();
-
     await budgetCond.request(stepBudget);
     
+    // update target info
+    let now = performance.now();
     target = ns.getServer(target.hostname);
     ++step;
 
@@ -210,5 +189,5 @@ export async function main(ns)
   let target = ns.args[0];
   let host = ns.args[1];
 
-  await dremel(ns, target, host);
+  await dremel(ns, ns.getServer(target), ns.getServer(host));
 }
