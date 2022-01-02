@@ -85,6 +85,16 @@ export async function main(ns) {
     };
   });
   await downloadManyFromGH(ns, specs);
+ 
+  for (const file of await ns.ls("home", "/program/")) {
+    if (!file.startsWith("/program/")) {
+      continue;
+    }
+    let shortcut = file.slice("/program/".length, -(".js".length));
+    ns.tprint("Setting up alias for ${shortcut}");
+    await command(`unalias ${shortcut}`);
+    await command(`alias ${shortcut}="run ${file}"`);
+  }
   
   ns.tprint("Install complete!");
   if (ns.args[0] !== "-n") { // no setup or reset
