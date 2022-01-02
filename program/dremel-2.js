@@ -144,16 +144,20 @@ export async function dremel(ns, target, host)
     timeOfLatestWeaken = Math.max(timeOfLatestWeaken, weakenEndT);
 
     if (actual / max > 0.8) {
-      msg(ns, `Scheduling loop hack to start at ${weakenStartT}`);
+      msg(ns, `(${fmtTime(performance.now())}) Scheduling loop hack to start, step ${step}`);
+      msg(ns, `  weaken start: ${weakenStartT}`);
+      msg(ns, `  grow start: ${hackStartT}`);
+      msg(ns, `  hack start: ${growStartT}`);
       if (loopPlan.weaken > 0) {
         thunks.push((async () => {
           let estDuration = weakenDuration;
           let estEnd = weakenEndT;
+          let whichStep = step;
           await until(ns, weakenStartT);
           let {
             elapsedTime
           } = await getTime(() => weaken(ns, host.hostname, loopPlan.weaken, target.hostname));
-          msg(ns, `Weaken ${loopPlan.weaken} ${host.hostname} -> ${target.hostname}`);
+          msg(ns, `${fmtTime(performance.now())}) Weaken ${loopPlan.weaken} ${host.hostname} -> ${target.hostname} step ${whichStep}`);
           msg(ns, `  Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
           msg(ns, `  Slop in end time: ${fmtTime(performance.now() - estEnd)}`);
           budgetCond.deposit(loopPlan.weaken);
@@ -163,11 +167,12 @@ export async function dremel(ns, target, host)
         thunks.push((async () => {
           let estDuration = growDuration;
           let estEnd = growEndT;
+          let whichStep = step;
           await until(ns, growStartT);
           let {
             elapsedTime
           } = await getTime(() => grow(ns, host.hostname, loopPlan.grow, target.hostname));
-          msg(ns, `Grow ${loopPlan.grow} ${host.hostname} -> ${target.hostname}`);
+          msg(ns, `${fmtTime(performance.now())}) Grow ${loopPlan.grow} ${host.hostname} -> ${target.hostname} step ${whichStep}`);
           msg(ns, `  Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
           msg(ns, `  Slop in end time: ${fmtTime(performance.now() - estEnd)}`);
           budgetCond.deposit(loopPlan.grow);
@@ -177,13 +182,14 @@ export async function dremel(ns, target, host)
         thunks.push((async () => {
           let estDuration = hackDuration;
           let estEnd = hackEndT;
+          let whichStep = step;
           await until(ns, hackStartT);
           let {
             result,
             elapsedTime
           } = await getTime(() => hack(ns, host.hostname, loopPlan.hack, target.hostname));
           totalGains += result;
-          msg(ns, `Hack ${loopPlan.hack} ${host.hostname} -> ${target.hostname}`);
+          msg(ns, `${fmtTime(performance.now())}) Hack ${loopPlan.hack} ${host.hostname} -> ${target.hostname} step ${whichStep}`);
           msg(ns, `  Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
           msg(ns, `  Slop in end time: ${fmtTime(performance.now() - estEnd)}`);
           msg(ns, `  Slop in reward: ${result - hackGains}`);
