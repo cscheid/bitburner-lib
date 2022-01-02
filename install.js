@@ -5,6 +5,7 @@ let owner = "cscheid";
 let repo = "bitburner-lib";
 let configFileName = 'install_files_json.txt';
 
+// NB an authenticated github account can make 5000 requests/hour
 async function githubReq(ns, req)
 {
   let { user, pat } = JSON.parse(await ns.read("github-pat.txt"));
@@ -14,10 +15,6 @@ async function githubReq(ns, req)
   headers.set('Authorization', `basic ${authString}`);
   ns.print(`Requesting ${url}`);
   let res = await fetch(url, { method: 'GET', headers });
-  // an authenticated github account can make 5000 requests/hour
-  // but we're going to throttle it at 50k/hour and hope people don't hammer it..
-  // 
-  await ns.sleep(3600 * 100 / 5000);
   if (res.status !== 200) {
     throw new Error(`Request ${req} failed.`);
   }
@@ -37,6 +34,24 @@ async function downloadFromGH(ns, path, saveFilename)
 {
   let res = await getFileFromGH(ns, owner, repo, path);
   await ns.write(saveFilename, res, "w");
+}
+
+async function downloadManyFromGH(ns, specs)
+{
+  let count = 0;
+  
+  let downloads = await Promise.all(specs.map(async spec => {
+    let content = await getFileFromGH(ns, owner, repo, spec.path);
+    ++count;
+    ns.tprint(`Installed ${count}/${spec.length}: ${spec.filename}`);
+    return {
+      ...spec,
+      content
+    };
+  }));
+  for (const { saveFilename, content } of downloads) {
+    await ns.write(saveFilename, content, "w");
+  }
 }
 
 async function fetchConfig(ns) {
@@ -63,20 +78,16 @@ export async function main(ns) {
   ns.tprint("Will download files.");
   ns.print(JSON.stringify(filesToDownload, null, 2));
 
-  let count = 0;
-  for (let filename of filesToDownload) {
-    try {
-	    await downloadFromGH(ns, filename, '/' + filename);
-      ++count;
-      ns.tprint(`Installed ${count}/${filesToDownload.length}: ${filename}`);
-    } catch (e) {
-      ns.tprint(String(e));
-      ++count;
-    }
-  }
+  const specs = filesToDownload.map(filename => {
+    return {
+      path: filename,
+      saveFilename: '/' + filename
+    };
+  });
+  await downloadManyFromGH(ns, specs);
   
   ns.tprint("Install complete!");
-  if (ns.args[0] !== "-n") { // no setup or reset {
+  if (ns.args[0] !== "-n") { // no setup or reset
     await ns.run("setup.js", 1);
   }
 }
