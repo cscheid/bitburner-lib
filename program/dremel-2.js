@@ -86,6 +86,7 @@ export async function dremel(ns, target, host)
   
   let step = 0;
   let totalGains = 0;
+  let expectedTotalGains = 0;
   
   let events = [];
   
@@ -105,6 +106,8 @@ export async function dremel(ns, target, host)
 
   let loopPlans = await planLoop(ns, target, host, budget);
   let loopPlan = loopPlans.maxEfficiency || loopPlans.maxReward;
+  let player = ns.getPlayer();
+  let expected = potentialGains(ns, target, player, loopPlan);
   if (loopPlan === undefined) {
     throw new Error("Can't find plans!");
   }
@@ -125,16 +128,9 @@ export async function dremel(ns, target, host)
     
     // update target info
     let now = performance.now();
-    target = ns.getServer(target.hostname);
-    msg(ns, `Target ${target.hostname} info:`, -1);
-    msg(ns, `  security: ${target.hackDifficulty}`);
-    msg(ns, `  money: ${target.moneyAvailable}`);
     ++step;
 
-    let player = ns.getPlayer();
-    let actual = potentialGains(ns, target, player, loopPlan);
     let max = maxGains(ns, target, player, loopPlan);
-    let hackGains = actual;
     
     let hackDuration = formulas.calculateHackingTime(ns, target, player) * 1000;
     let growDuration = hackDuration * 3.2;
@@ -152,7 +148,7 @@ export async function dremel(ns, target, host)
     let hackStartT = hackEndT - hackDuration;
     timeOfLatestWeaken = Math.max(timeOfLatestWeaken, weakenEndT);
 
-    if (actual / max > 0.8) {
+    if (expectedTotalGains === 0 || (totalGains / expectedTotalGains)) {
       msg(ns, `(${fmtNow()}) Scheduling loop hack to start, step ${step}`, -1);
       msg(ns, `  weaken: ${fmtTime(weakenStartT/1000)}-${fmtTime(weakenEndT/1000)} duration: ${fmtTime(weakenDuration/1000)}`, -2);
       msg(ns, `  grow: ${fmtTime(growStartT/1000)}-${fmtTime(growEndT/1000)} duration: ${fmtTime(growDuration/1000)}`, -2);
@@ -167,6 +163,7 @@ export async function dremel(ns, target, host)
           let {
             elapsedTime
           } = await getTime(() => weaken(ns, host.hostname, loopPlan.weaken, target.hostname));
+          player = ns.getPlayer();
           msg(ns, `(${fmtNow()}) Weaken ${loopPlan.weaken} ${host.hostname} -> ${target.hostname} step ${whichStep}`, -1);
           msg(ns, `  Slop in duration: ${fmtTime((elapsedTime - estDuration)/1000)}`, -2);
           msg(ns, `  Slop in end time: ${fmtTime((performance.now() - estEnd)/1000)}`, -2);
@@ -183,6 +180,7 @@ export async function dremel(ns, target, host)
           let {
             elapsedTime
           } = await getTime(() => grow(ns, host.hostname, loopPlan.grow, target.hostname));
+          player = ns.getPlayer();
           msg(ns, `(${fmtNow()}) Grow ${loopPlan.grow} ${host.hostname} -> ${target.hostname} step ${whichStep}`, -1);
           msg(ns, `  Slop in duration: ${fmtTime((elapsedTime - estDuration)/1000)}`, -2);
           msg(ns, `  Slop in end time: ${fmtTime((performance.now() - estEnd)/1000)}`, -2);
@@ -200,11 +198,17 @@ export async function dremel(ns, target, host)
             result,
             elapsedTime
           } = await getTime(() => hack(ns, host.hostname, loopPlan.hack, target.hostname));
+          player = ns.getPlayer();
           totalGains += result;
           msg(ns, `(${fmtNow()}) Hack ${loopPlan.hack} ${host.hostname} -> ${target.hostname} step ${whichStep}`, -1);
           msg(ns, `  Slop in duration: ${fmtTime((elapsedTime - estDuration)/1000)}`, -2);
           msg(ns, `  Slop in end time: ${fmtTime((performance.now() - estEnd)/1000)}`, -2);
-          msg(ns, `  Slop in reward: ${result - hackGains}`, -2);
+          if (result > 0) {
+            msg(ns, `  Slop in reward: ${result - expected}`, -2);
+            expectedTotalGains += expected;
+          } else {
+            msg(ns, `  Hacking failed :(`, -2);
+          };
           budgetCond.deposit(loopPlan.hack);
         })());
       }

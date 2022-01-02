@@ -14,13 +14,13 @@ export async function main(ns)
     await clearDebug();
     break;
   case "scrollon":
-    await scrollOn();
+    await scrollOn(ns);
     break;
   case "scrolloff":
-    await scrollOff();
+    await scrollOff(ns);
     break;
   case "level":
-    setLevel(Number(ns.arg[1]));
+    setLevel(ns, Number(ns.args[1]));
     break;
   }
 }
