@@ -43,7 +43,7 @@ async function downloadManyFromGH(ns, specs)
   let downloads = await Promise.all(specs.map(async spec => {
     let content = await getFileFromGH(ns, owner, repo, spec.path);
     ++count;
-    ns.tprint(`Installed ${count}/${spec.length}: ${spec.filename}`);
+    ns.tprint(`Installed ${count}/${specs.length}: ${spec.saveFilename}`);
     return {
       ...spec,
       content
