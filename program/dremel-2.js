@@ -5,7 +5,7 @@ import * as formulas from "/lib/bb/formulas.js";
 import { hack as hackSim } from "/lib/bb/simulator.js";
 import { ConditionVariable } from "/lib/condition-variable.js";
 import { getTime, until } from "/lib/time.js";
-import { fmtTime } from "/lib/fmt.js";
+import { fmtTime, fmtNow } from "/lib/fmt.js";
 import { msg } from "/lib/ui/debug.js";
 
 class Budget
@@ -70,13 +70,13 @@ export async function dremel(ns, target, host)
   let budget = ~~(availableRam / ramCost);
   let begin = performance.now();
 
-  msg(ns, `Growing ${target.hostname}'s account`);
+  msg(ns, `Growing ${target.hostname}'s account`, -2);
   let nap = 1000, micronap = 16;
   for (const step of await planBootstrap(ns, target, host, budget)) {
     await runBootstrapStep(ns, target, host, step);
   }
 
-  msg("hack loop started");
+  msg("hack loop started", -2);
   target = ns.getServer(target.hostname); // server now has new stats
   
   let usedBudget = budget;
@@ -108,14 +108,14 @@ export async function dremel(ns, target, host)
     throw new Error("Can't find plans!");
   }
   let stepBudget = loopPlan.weaken + loopPlan.grow + loopPlan.hack;
-  msg(ns, `Loop plan:\n\n${JSON.stringify(loopPlan)}`);
+  msg(ns, `Loop plan:\n\n${JSON.stringify(loopPlan)}`, -2);
 
   while (true) {
 
     await ns.asleep(10);
     await budgetCond.request(stepBudget);
 
-    msg(ns, `Allocated ${stepBudget} threads`);
+    msg(ns, `Allocated ${stepBudget} threads`, -2);
     
     // update target info
     let now = performance.now();
@@ -136,30 +136,31 @@ export async function dremel(ns, target, host)
     let weakenStartT = Math.max(timeOfLatestWeaken + nap * 3 - weakenDuration, now);
 
     let weakenEndT = weakenStartT + weakenDuration;
-    let growEndT = weakenEndT - nap;
-    let hackEndT = growEndT - nap * 2;
+    let growEndT   = weakenEndT - nap;
+    let hackEndT   = weakenEndT - nap * 2;
     
     let growStartT = growEndT - growDuration;
     let hackStartT = hackEndT - hackDuration;
     timeOfLatestWeaken = Math.max(timeOfLatestWeaken, weakenEndT);
 
     if (actual / max > 0.8) {
-      msg(ns, `(${fmtTime(performance.now())}) Scheduling loop hack to start, step ${step}`);
-      msg(ns, `  weaken start: ${weakenStartT}`);
-      msg(ns, `  grow start: ${hackStartT}`);
-      msg(ns, `  hack start: ${growStartT}`);
+      msg(ns, `(${fmtNow()}) Scheduling loop hack to start, step ${step}`, -1);
+      msg(ns, `  weaken: ${fmtTime(weakenStartT/1000)}-${fmtTime(weakenEndT/1000)} duration: ${fmtTime(weakenDuration/1000)}`, -2);
+      msg(ns, `  grow: ${fmtTime(growStartT/1000)}-${fmtTime(growEndT/1000)} duration: ${fmtTime(growDuration/1000)}`, -2);
+      msg(ns, `  hack: ${fmtTime(hackStartT/1000)}-${fmtTime(hackEndT/1000)} duration: ${fmtTime(hackDuration/1000)}`, -2);
       if (loopPlan.weaken > 0) {
         thunks.push((async () => {
           let estDuration = weakenDuration;
           let estEnd = weakenEndT;
           let whichStep = step;
+          msg(ns, `[weaken step ${step} nap at ${fmtNow()} until ${fmtTime(weakenStartT/1000)}]`, -2);
           await until(ns, weakenStartT);
           let {
             elapsedTime
           } = await getTime(() => weaken(ns, host.hostname, loopPlan.weaken, target.hostname));
-          msg(ns, `${fmtTime(performance.now())}) Weaken ${loopPlan.weaken} ${host.hostname} -> ${target.hostname} step ${whichStep}`);
-          msg(ns, `  Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
-          msg(ns, `  Slop in end time: ${fmtTime(performance.now() - estEnd)}`);
+          msg(ns, `(${fmtNow()}) Weaken ${loopPlan.weaken} ${host.hostname} -> ${target.hostname} step ${whichStep}`, -1);
+          msg(ns, `  Slop in duration: ${fmtTime((elapsedTime - estDuration)/1000)}`, -2);
+          msg(ns, `  Slop in end time: ${fmtTime((performance.now() - estEnd)/1000)}`, -2);
           budgetCond.deposit(loopPlan.weaken);
         })());
       }
@@ -168,13 +169,14 @@ export async function dremel(ns, target, host)
           let estDuration = growDuration;
           let estEnd = growEndT;
           let whichStep = step;
+          msg(ns, `[grow step ${step} nap at ${fmtNow()} until ${fmtTime(growStartT/1000)}]`, -2);
           await until(ns, growStartT);
           let {
             elapsedTime
           } = await getTime(() => grow(ns, host.hostname, loopPlan.grow, target.hostname));
-          msg(ns, `${fmtTime(performance.now())}) Grow ${loopPlan.grow} ${host.hostname} -> ${target.hostname} step ${whichStep}`);
-          msg(ns, `  Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
-          msg(ns, `  Slop in end time: ${fmtTime(performance.now() - estEnd)}`);
+          msg(ns, `(${fmtNow()}) Grow ${loopPlan.grow} ${host.hostname} -> ${target.hostname} step ${whichStep}`, -1);
+          msg(ns, `  Slop in duration: ${fmtTime((elapsedTime - estDuration)/1000)}`, -2);
+          msg(ns, `  Slop in end time: ${fmtTime((performance.now() - estEnd)/1000)}`, -2);
           budgetCond.deposit(loopPlan.grow);
         })());
       }
@@ -183,28 +185,29 @@ export async function dremel(ns, target, host)
           let estDuration = hackDuration;
           let estEnd = hackEndT;
           let whichStep = step;
+          msg(ns, `[hack step ${step} nap at ${fmtNow()} until ${fmtTime(hackStartT/1000)}]`, -2);
           await until(ns, hackStartT);
           let {
             result,
             elapsedTime
           } = await getTime(() => hack(ns, host.hostname, loopPlan.hack, target.hostname));
           totalGains += result;
-          msg(ns, `${fmtTime(performance.now())}) Hack ${loopPlan.hack} ${host.hostname} -> ${target.hostname} step ${whichStep}`);
-          msg(ns, `  Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
-          msg(ns, `  Slop in end time: ${fmtTime(performance.now() - estEnd)}`);
-          msg(ns, `  Slop in reward: ${result - hackGains}`);
+          msg(ns, `(${fmtNow()}) Hack ${loopPlan.hack} ${host.hostname} -> ${target.hostname} step ${whichStep}`, -1);
+          msg(ns, `  Slop in duration: ${fmtTime((elapsedTime - estDuration)/1000)}`, -2);
+          msg(ns, `  Slop in end time: ${fmtTime((performance.now() - estEnd)/1000)}`, -2);
+          msg(ns, `  Slop in reward: ${result - hackGains}`, -2);
           budgetCond.deposit(loopPlan.hack);
         })());
       }
     } else {
-      msg(ns, `Scheduling boostrap to start at ${weakenStartT}`);
+      msg(ns, `Scheduling boostrap to start at ${fmtTime(weakenStartT/1000)}`, -2);
       // schedule a bootstrap step
       let x = (await planBootstrap(ns, target, host, stepBudget))[0];
       if (x.weaken > 0) {
         thunks.push((async () => {
           await until(ns, weakenStartT);
           await weaken(ns, host.hostname, x.weaken, target.hostname);
-          msg(ns, `bootstrap Weaken ${x.weaken} ${host.hostname} -> ${target.hostname}`);
+          msg(ns, `(${fmtNow()}) bootstrap Weaken ${x.weaken} ${host.hostname} -> ${target.hostname}`, -2);
           budgetCond.deposit(stepBudget);
         })());
       }
@@ -212,7 +215,7 @@ export async function dremel(ns, target, host)
         thunks.push((async () => {
           await until(ns, growStartT);
           return grow(ns, host.hostname, x.grow, target.hostname);
-          msg(ns, `bootstrap Grow ${x.grow} ${host.hostname} -> ${target.hostname}`);
+          msg(ns, `(${fmtNow()}) bootstrap Grow ${x.grow} ${host.hostname} -> ${target.hostname}`, -2);
         })());
       }
     }

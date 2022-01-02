@@ -1,4 +1,4 @@
-import { showDebug, hideDebug, clearDebug, scrollOn, scrollOff } from "/lib/ui/debug.js";
+import { showDebug, hideDebug, clearDebug, scrollOn, scrollOff, setLevel } from "/lib/ui/debug.js";
 
 /** @param {NS} ns */
 export async function main(ns)
@@ -18,6 +18,9 @@ export async function main(ns)
     break;
   case "scrolloff":
     await scrollOff();
+    break;
+  case "level":
+    setLevel(Number(ns.arg[1]));
     break;
   }
 }
