@@ -1,0 +1,12 @@
+* TODO use API BitNode Multipliers since they matter now, that's what's screwing up my timings!
+
+We need source 5 for it
+
+For now, we're faking by editing the file as we change bitnodes.
+
+* TODO gameplay
+
+Let's beat source-level 1 more times so we can get the multipliers,
+and then go to source-level 5 to get the good APIs
+
+

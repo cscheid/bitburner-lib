@@ -69,16 +69,13 @@ export async function dremel(ns, target, host)
   let begin = performance.now();
 
   ns.tprint(`Growing ${target.hostname}'s account`);
-  let nap = 100, micronap = 16;
+  let nap = 1000, micronap = 16;
   for (const step of await planBootstrap(ns, target, host, budget)) {
     await runBootstrapStep(ns, target, host, step);
   }
 
   ns.tprint("hack loop started");
   target = ns.getServer(target.hostname); // server now has new stats
-
-  let loopPlan = (await planLoop(ns, target, host, budget)).maxEfficiency;
-  let stepBudget = loopPlan.weaken + loopPlan.grow + loopPlan.hack;
   
   let usedBudget = budget;
   
@@ -101,8 +98,18 @@ export async function dremel(ns, target, host)
   let monitorPromise = monitorResults();
   let budgetCond = new Budget(usedBudget);
 
+  let thunks = [];
+
+  let loopPlan = (await planLoop(ns, target, host, budget)).maxEfficiency;
+  let stepBudget = loopPlan.weaken + loopPlan.grow + loopPlan.hack;
+  ns.tprint(`Loop plan:\n\n${JSON.stringify(loopPlan)}`);
+
   while (true) {
+
+    await ns.asleep(10);
     await budgetCond.request(stepBudget);
+
+    ns.tprint(`Allocated ${stepBudget} threads`);
     
     // update target info
     let now = performance.now();
@@ -128,12 +135,13 @@ export async function dremel(ns, target, host)
     
     let growStartT = growEndT - growDuration;
     let hackStartT = hackEndT - hackDuration;
+    timeOfLatestWeaken = Math.max(timeOfLatestWeaken, weakenEndT);
 
     if (actual / max > 0.5) {
-      let thunks = [];
+      ns.tprint(`Scheduling loop hack to start at ${weakenStartT}`);
       if (loopPlan.weaken > 0) {
         thunks.push((async () => {
-          await until(weakenStartT);
+          await until(ns, weakenStartT);
           await weaken(ns, host.hostname, loopPlan.weaken, target.hostname);
           ns.tprint(`Weaken ${loopPlan.weaken} ${host.hostname} -> ${target.hostname}`);
           budgetCond.deposit(loopPlan.weaken);
@@ -141,7 +149,7 @@ export async function dremel(ns, target, host)
       }
       if (loopPlan.grow > 0) {
         thunks.push((async () => {
-          await until(growStartT);
+          await until(ns, growStartT);
           await grow(ns, host.hostname, loopPlan.grow, target.hostname);
           ns.tprint(`Grow ${loopPlan.grow} ${host.hostname} -> ${target.hostname}`);
           budgetCond.deposit(loopPlan.grow);
@@ -149,34 +157,32 @@ export async function dremel(ns, target, host)
       }
       if (loopPlan.hack > 0) {
         thunks.push((async () => {
-          await until(hackStartT);
-          let result = hack(ns, host.hostname, loopPlan.hack, target.hostname);
+          await until(ns, hackStartT);
+          let result = await hack(ns, host.hostname, loopPlan.hack, target.hostname);
           totalGains += result;
           ns.tprint(`Hack ${loopPlan.hack} ${host.hostname} -> ${target.hostname}`);
           budgetCond.deposit(loopPlan.hack);
         })());
       }
-      await Promise.all(thunks);
     } else {
+      ns.tprint(`Scheduling boostrap to start at ${weakenStartT}`);
       // schedule a bootstrap step
       let x = (await planBootstrap(ns, target, host, stepBudget))[0];
-      let thunks = [];
       if (x.weaken > 0) {
         thunks.push((async () => {
-          await until(weakenStartT);
+          await until(ns, weakenStartT);
           await weaken(ns, host.hostname, x.weaken, target.hostname);
           ns.tprint(`Weaken ${x.weaken} ${host.hostname} -> ${target.hostname}`);
+          budgetCond.deposit(stepBudget);
         })());
       }
       if (x.grow > 0) {
         thunks.push((async () => {
-          await until(growStartT);
+          await until(ns, growStartT);
           return grow(ns, host.hostname, x.grow, target.hostname);
           ns.tprint(`Grow ${x.grow} ${host.hostname} -> ${target.hostname}`);
         })());
       }
-      await Promise.all(thunks);
-      budgetCond.deposit(stepBudget);
     }
   }
 }
