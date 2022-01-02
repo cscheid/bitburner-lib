@@ -6,6 +6,7 @@ import { hack as hackSim } from "/lib/bb/simulator.js";
 import { ConditionVariable } from "/lib/condition-variable.js";
 import { getTime, until } from "/lib/time.js";
 import { fmtTime } from "/lib/fmt.js";
+import { msg } from "/lib/ui/debug.js";
 
 class Budget
 {
@@ -142,33 +143,45 @@ export async function dremel(ns, target, host)
       ns.tprint(`Scheduling loop hack to start at ${weakenStartT}`);
       if (loopPlan.weaken > 0) {
         thunks.push((async () => {
-          await until(ns, weakenStartT);
           let estDuration = weakenDuration;
           let estEnd = weakenEndT;
+          await until(ns, weakenStartT);
           let {
             elapsedTime
           } = await getTime(() => weaken(ns, host.hostname, loopPlan.weaken, target.hostname));
-          
-          console.log(`Weaken ${loopPlan.weaken} ${host.hostname} -> ${target.hostname}`);
-          console.log(`Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
-          console.log(`Slop in end time: ${fmtTime(weakenEndT - estEnd)}`);
+          msg(`Weaken ${loopPlan.weaken} ${host.hostname} -> ${target.hostname}`);
+          msg(`Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
+          msg(`Slop in end time: ${fmtTime(weakenEndT - estEnd)}`);
           budgetCond.deposit(loopPlan.weaken);
         })());
       }
       if (loopPlan.grow > 0) {
         thunks.push((async () => {
+          let estDuration = growDuration;
+          let estEnd = growEndT;
           await until(ns, growStartT);
-          await grow(ns, host.hostname, loopPlan.grow, target.hostname);
-          ns.tprint(`Grow ${loopPlan.grow} ${host.hostname} -> ${target.hostname}`);
+          let {
+            elapsedTime
+          } = await getTime(() => grow(ns, host.hostname, loopPlan.grow, target.hostname));
+          msg(`Grow ${loopPlan.grow} ${host.hostname} -> ${target.hostname}`);
+          msg(`Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
+          msg(`Slop in end time: ${fmtTime(weakenEndT - estEnd)}`);
           budgetCond.deposit(loopPlan.grow);
         })());
       }
       if (loopPlan.hack > 0) {
         thunks.push((async () => {
+          let estDuration = hackDuration;
+          let estEnd = hackEndT;
           await until(ns, hackStartT);
-          let result = await hack(ns, host.hostname, loopPlan.hack, target.hostname);
+          let {
+            result,
+            elapsedTime
+          } = await getTime(() => hack(ns, host.hostname, loopPlan.hack, target.hostname));
           totalGains += result;
-          ns.tprint(`Hack ${loopPlan.hack} ${host.hostname} -> ${target.hostname}`);
+          msg(`Hack ${loopPlan.hack} ${host.hostname} -> ${target.hostname}`);
+          msg(`Slop in duration: ${fmtTime(elapsedTime - estDuration)}`);
+          msg(`Slop in end time: ${fmtTime(weakenEndT - estEnd)}`);
           budgetCond.deposit(loopPlan.hack);
         })());
       }
