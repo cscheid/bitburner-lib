@@ -1,4 +1,4 @@
-import { showDebug, hideDebug, clearDebug } from "/lib/ui/debug.js";
+import { showDebug, hideDebug, clearDebug, scrollOn, scrollOff } from "/lib/ui/debug.js";
 
 /** @param {NS} ns */
 export async function main(ns)
@@ -14,10 +14,10 @@ export async function main(ns)
     await clearDebug();
     break;
   case "scrollon":
-    await clearDebug();
+    await scrollOn();
     break;
   case "scrolloff":
-    await clearDebug();
+    await scrollOff();
     break;
   }
 }
