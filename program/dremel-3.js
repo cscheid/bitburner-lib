@@ -55,9 +55,8 @@ export function runBootstrapStep(ns, target, host, step)
   return Promise.all(promises);
 }
 
-export async function dremel(ns, target, host)
+export async function dremel(ns, target, host, opts)
 {
-  debugger;
   let ramCost = 1.75;
 
   let availableRam = host.maxRam - host.ramUsed;
@@ -71,10 +70,12 @@ export async function dremel(ns, target, host)
   let begin = performance.now();
 
   msg(ns, `${fmtNow()}: Dremel ${host.hostname} -> ${target.hostname} start`);
-  msg(ns, `Growing ${target.hostname}'s account`);
   let gap = 3000, nap = 100, micronap = 16;
-  for (const step of await planBootstrap(ns, target, host, budget)) {
-    await runBootstrapStep(ns, target, host, step);
+  if (opts.skipGrow) {
+    msg(ns, `Growing ${target.hostname}'s account`);
+    for (const step of await planBootstrap(ns, target, host, budget)) {
+      await runBootstrapStep(ns, target, host, step);
+    }
   }
 
   msg(ns, "hack loop started", -2);
@@ -104,8 +105,16 @@ export async function dremel(ns, target, host)
 
   let thunks = [];
 
-  let loopPlans = await planLoop(ns, target, host, budget, gap / 1000);
-  let loopPlan = loopPlans.maxEfficiency || loopPlans.maxReward;
+  let loopPlans = await planLoop(ns, target, host, budget - 1, gap / 1000);
+  let loopPlan;
+  
+  if (opts.maxRewqrd)
+    loopPlan = loopPlans.maxReward;
+  else if (opts.maxEfficiency)
+    loopPlan = loopPlans.maxEfficiency;
+  else
+    loopPlan = loopPlans.maxEfficiency || loopPlans.maxReward;
+  
   let player = ns.getPlayer();
   let expected = potentialGains(ns, target, player, loopPlan);
   if (loopPlan === undefined) {
@@ -251,13 +260,24 @@ export async function dremel(ns, target, host)
   }
 }
 
-
 /** @param {NS} ns */
 export async function main(ns)
 {
   let someArgs = ["foo", "bar"]; // args to pass to remote program
   let target = ns.args[0];
   let host = ns.args[1];
+  let opts = {};
+  for (const arg of ns.args.slice(2)) {
+    if (arg === "--skip") {
+      opts.skipGrow = true;
+    }
+    if (arg === "--reward") {
+      opts.maxReward = true;
+    }
+    if (arg === "--efficiency") {
+      opts.efficiency = true;
+    }
+  }
 
-  await dremel(ns, ns.getServer(target), ns.getServer(host));
+  await dremel(ns, ns.getServer(target), ns.getServer(host), opts);
 }
