@@ -108,18 +108,19 @@ export async function dremel(ns, target, host, opts)
   let loopPlans = await planLoop(ns, target, host, budget - 1, gap / 1000);
   let loopPlan;
   
-  if (opts.maxRewqrd)
+  if (opts.maxReward)
     loopPlan = loopPlans.maxReward;
   else if (opts.maxEfficiency)
     loopPlan = loopPlans.maxEfficiency;
   else
     loopPlan = loopPlans.maxEfficiency || loopPlans.maxReward;
   
-  let player = ns.getPlayer();
-  let expected = potentialGains(ns, target, player, loopPlan);
   if (loopPlan === undefined) {
     throw new Error("Can't find plans!");
   }
+  
+  let player = ns.getPlayer();
+  let expected = potentialGains(ns, target, player, loopPlan);
   if (loopPlans.efficiency) {
     msg(ns, `Using efficient plans`, -2);
   } else {
