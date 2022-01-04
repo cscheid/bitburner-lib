@@ -76,14 +76,14 @@ export async function main(ns) {
     "width": 800,
     "height": 400,
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-    "description": "hack vs reward",
-    "data": rewards.filter(d => d.hostname === "n00dles"),
+    "description": "hack vs efficiency",
+    "data": { values: efficiencies.filter(d => d.hostname === "n00dles") },
     "mark": {
       "type": "line"
     },
     "encoding": {
-      "x": {"field": "hack", "type": "quantitative"},
-      "y": {"field": "value", "type": "quantitative"},
+      "x": { "field": "hack", "type": "quantitative" },
+      "y": { "field": "value", "type": "quantitative" },
 //      "color": {"field": "hostname", "type": "nominal"}
     }
   });
