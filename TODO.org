@@ -10,3 +10,27 @@ Let's beat source-level 1 more times so we can get the multipliers,
 and then go to source-level 5 to get the good APIs
 
 
+* 2022-01-02 21:05
+
+n00dles is the thing to hit at least for low-level non-dremel things.
+
+let's write a program to automatically set the loic weights
+
+** TODO write a program to "git diff" against the GH head.
+
+
+*** TODO mini-git?
+
+"git-fetch" could copy files to "_git" or actual ".git"
+
+"git-diff" compares against that
+
+"git-
+
+** TODO create pkill
+
+kill processes based on name and not args
+
+
+
+

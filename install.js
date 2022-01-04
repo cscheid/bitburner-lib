@@ -1,9 +1,31 @@
+// NB DO NOT IMPORT ANYTHING HERE IN CASE IT'S THE FIRST-EVER IMPORT
 // lots of inspiration from https://github.com/lethern/Bitburner_os/blob/main/install.js
-import { command } from "/lib/ui/terminal.js";
 
 let owner = "cscheid";
 let repo = "bitburner-lib";
 let configFileName = 'install_files_json.txt';
+
+/*global globalThis, Headers*/
+function command(message) {
+  const docs = globalThis['document'];
+  const terminalInput = docs.getElementById("terminal-input");
+  terminalInput.value = message;
+  const handler = Object.keys(terminalInput)[1];
+  terminalInput[handler].onChange({ target: terminalInput });
+  terminalInput[handler].onKeyDown({ keyCode:13, preventDefault: () => null });
+}
+
+async function realias(ns) {
+  for (const file of await ns.ls("home", "/program/")) {
+    if (!file.startsWith("/program/")) {
+      continue;
+    }
+    let shortcut = file.slice("/program/".length, -(".js".length));
+    ns.tprint("Setting up alias for ${shortcut}");
+    command(`unalias ${shortcut}`);
+    command(`alias ${shortcut}="run ${file}"`);
+  }
+}
 
 // NB an authenticated github account can make 5000 requests/hour
 async function githubReq(ns, req)
@@ -85,17 +107,8 @@ export async function main(ns) {
     };
   });
   await downloadManyFromGH(ns, specs);
- 
-  for (const file of await ns.ls("home", "/program/")) {
-    if (!file.startsWith("/program/")) {
-      continue;
-    }
-    let shortcut = file.slice("/program/".length, -(".js".length));
-    ns.tprint("Setting up alias for ${shortcut}");
-    await command(`unalias ${shortcut}`);
-    await command(`alias ${shortcut}="run ${file}"`);
-  }
   
+  await realias(ns);  
   ns.tprint("Install complete!");
   if (ns.args[0] !== "-n") { // no setup or reset
     await ns.run("setup.js", 1);

@@ -9,6 +9,12 @@ export async function main(ns) {
   }, {
     file: "nitesec-test.msg",
     node: "avmnite-02h"
+  }, {
+    file: "19dfj3l1nd.msg",
+    node: "run4theh111z"
+  }, {
+    file: "j3.msg",
+    node: "I.I.I.I"
   }];
   while (true) {
     for (const node of factionNodes) {
