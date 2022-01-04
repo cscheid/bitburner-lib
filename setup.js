@@ -1,4 +1,4 @@
-import { command } from "/lib/ui/terminal.js";
+import { command, realias } from "/lib/ui/terminal.js";
 import { restart } from "/lib/process.js";
 import { copyAll } from "/program/copy-all.js";
 
@@ -21,6 +21,7 @@ export async function main(ns)
   await command(`unalias install`);
   await command(`alias install="home; killall; run install.js"`);
   
+  await realias(ns);
   await command(`cls`);
-  await ns.disableLog("getHackingLevel");  
+  await ns.disableLog("getHackingLevel");
 }
