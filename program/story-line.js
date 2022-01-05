@@ -58,8 +58,8 @@ export async function main(ns) {
     for (const {name, cost} of hackProgs) {
       let money = ns.getPlayer().money;
       if ((cost <= money) && (files.indexOf(name) === -1)) {
-        await command("home");
-        await command(`buy ${name}`);
+        await command(ns, "home");
+        await command(ns, `buy ${name}`);
       }
       await ns.asleep(1000);
     }
