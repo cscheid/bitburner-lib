@@ -11,6 +11,7 @@ export async function main(ns) {
     "^/log",
     "^/data",
     "^/scratch",
+    "^/exploits",
     "^/os",
     "^.+\.lit$",
     "^\.msg",
