@@ -1,5 +1,5 @@
 import { owner, repo, req, fetchConfig, downloadMany } from "/lib/gh.js";
-import diff from 'https://cdn.skypack.dev/diff';
+import * as diff from 'https://cdn.skypack.dev/diff';
 
 /** @param {NS} ns */
 export async function main(ns) {

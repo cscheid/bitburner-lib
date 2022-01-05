@@ -71,7 +71,7 @@ export async function dremel(ns, target, host, opts)
 
   msg(ns, `${fmtNow()}: Dremel ${host.hostname} -> ${target.hostname} start`);
   let gap = 3000, nap = 100, micronap = 16;
-  if (opts.skipGrow) {
+  if (!opts.skipGrow) {
     msg(ns, `Growing ${target.hostname}'s account`);
     for (const step of await planBootstrap(ns, target, host, budget)) {
       await runBootstrapStep(ns, target, host, step);
