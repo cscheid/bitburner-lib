@@ -45,19 +45,19 @@ export async function main(ns) {
           ns.hasRootAccess(node.node) &&
           server.backdoorInstalled === false &&
           server.requiredHackingSkill <= level) {
-        await command("home");
+        await command(ns, "home");
         await ns.asleep(1000);
-        await command(`go ${node.node}`);
+        await command(ns, `go ${node.node}`);
         await ns.asleep(1000);
-        await command("backdoor");
+        await command(ns, "backdoor");
         await ns.asleep(5000);
-        await command("home");
+        await command(ns, "home");
       }
     }
     let files = await ns.ls("home");
     for (const {name, cost} of hackProgs) {
       let money = ns.getPlayer().money;
-      if (cost <= money) {
+      if ((cost <= money) && (files.indexOf(name) === -1)) {
         await command("home");
         await command(`buy ${name}`);
       }
