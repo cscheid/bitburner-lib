@@ -2,7 +2,6 @@ import { command } from "/lib/ui/terminal.js";
 
 /** @param {NS} ns */
 export async function main(ns) {
-  let level = ns.getHackingLevel();
   let factionNodes = [{
     file: "csec-test.msg",
     node: "CSEC"
@@ -16,22 +15,54 @@ export async function main(ns) {
     file: "j3.msg",
     node: "I.I.I.I"
   }];
+  let hackProgs = [
+// FTPCrack.exe - $1.500m - Opens up FTP Ports.
+// relaySMTP.exe - $5.000m - Opens up SMTP Ports.
+// HTTPWorm.exe - $30.000m - Opens up HTTP Ports.
+// SQLInject.exe - $250.000m - Opens up SQL Ports.
+    {
+      name: "FTPCrack.exe",
+      cost: 1.5e6,
+    },
+    {
+      name: "relaySMTP.exe",
+      cost: 5e6,
+    },
+    {
+      name: "HTTPWorm.exe",
+      cost: 30e6,
+    },
+    {
+      name: "SQLInject.exe",
+      cost: 250e6,
+    },
+  ];
   while (true) {
     for (const node of factionNodes) {
+      let level = ns.getHackingLevel();
       let server = await ns.getServer(node.node);
       if (ns.fileExists(node.file, "home") &&
           ns.hasRootAccess(node.node) &&
           server.backdoorInstalled === false &&
           server.requiredHackingSkill <= level) {
         await command("home");
-        await ns.sleep(1000);
+        await ns.asleep(1000);
         await command(`go ${node.node}`);
-        await ns.sleep(1000);
+        await ns.asleep(1000);
         await command("backdoor");
-        await ns.sleep(5000);
+        await ns.asleep(5000);
         await command("home");
       }
     }
-    await ns.sleep(10000);
+    let files = await ns.ls("home");
+    for (const {name, cost} of hackProgs) {
+      let money = ns.getPlayer().money;
+      if (cost <= money) {
+        await command("home");
+        await command(`buy ${name}`);
+      }
+      await ns.asleep(1000);
+    }
+    await ns.asleep(10000);
   }
 }

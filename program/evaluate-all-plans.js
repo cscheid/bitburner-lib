@@ -84,7 +84,7 @@ export async function main(ns) {
     "encoding": {
       "x": { "field": "hack", "type": "quantitative" },
       "y": { "field": "value", "type": "quantitative" },
-//      "color": {"field": "hostname", "type": "nominal"}
+      "color": { "field": "hostname", "type": "nominal" }
     }
   });
   

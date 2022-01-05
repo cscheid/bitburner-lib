@@ -1,5 +1,12 @@
 import {planLoop} from "/lib/planner.js";
 
+export async function loicWeightsFromPlan(ns, target, host, budget)
+{
+  let plan = await planLoop(ns, target, host, budget, 0.00001);
+
+  return [plan.maxReward.hack, plan.maxReward.weaken, plan.maxReward.grow];
+}
+
 /** @param {NS} ns **/
 export async function main(ns) {
   let budget;
